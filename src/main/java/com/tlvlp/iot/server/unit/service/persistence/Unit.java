@@ -14,10 +14,7 @@ public class Unit {
     @Id
     private String id;
     private String name;
-    private String module;
     private String project;
-    private String wifiAccessPoint;
-    private String ip;
     private Boolean active;
     private LocalDateTime lastSeen;
     private Set<Module> modules;
@@ -43,10 +40,7 @@ public class Unit {
         return "Unit{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", module='" + module + '\'' +
                 ", project='" + project + '\'' +
-                ", wifiAccessPoint='" + wifiAccessPoint + '\'' +
-                ", ip='" + ip + '\'' +
                 ", active=" + active +
                 ", lastSeen=" + lastSeen +
                 ", modules=" + modules +
@@ -71,39 +65,12 @@ public class Unit {
         return this;
     }
 
-    public String getModule() {
-        return module;
-    }
-
-    public Unit setModule(String module) {
-        this.module = module;
-        return this;
-    }
-
     public String getProject() {
         return project;
     }
 
     public Unit setProject(String project) {
         this.project = project;
-        return this;
-    }
-
-    public String getWifiAccessPoint() {
-        return wifiAccessPoint;
-    }
-
-    public Unit setWifiAccessPoint(String wifiAccessPoint) {
-        this.wifiAccessPoint = wifiAccessPoint;
-        return this;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public Unit setIp(String ip) {
-        this.ip = ip;
         return this;
     }
 
