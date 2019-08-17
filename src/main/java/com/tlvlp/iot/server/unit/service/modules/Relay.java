@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Relay implements Module {
 
-    enum State {
+    public enum State {
         on, off
     }
 
@@ -13,12 +13,11 @@ public class Relay implements Module {
     private String name;
     private State state;
 
-
     @Override
     public String toString() {
         return "Relay{" +
-                "state=" + state +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
+                ", state=" + state +
                 '}';
     }
 
@@ -27,13 +26,12 @@ public class Relay implements Module {
         if (this == o) return true;
         if (!(o instanceof Relay)) return false;
         Relay relay = (Relay) o;
-        return state == relay.state &&
-                name.equals(relay.name);
+        return name.equals(relay.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(state, name);
+        return Objects.hash(name);
     }
 
     public static String getReference() {

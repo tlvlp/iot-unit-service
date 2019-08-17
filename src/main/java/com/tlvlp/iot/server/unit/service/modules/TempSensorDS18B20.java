@@ -21,13 +21,12 @@ public class TempSensorDS18B20 implements Module {
         if (this == o) return true;
         if (!(o instanceof TempSensorDS18B20)) return false;
         TempSensorDS18B20 that = (TempSensorDS18B20) o;
-        return name.equals(that.name) &&
-                value.equals(that.value);
+        return name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, value);
+        return Objects.hash(name);
     }
 
     public static String getReference() {

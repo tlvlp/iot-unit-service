@@ -21,13 +21,12 @@ public class SoilMoistureSensor implements Module {
         if (this == o) return true;
         if (!(o instanceof SoilMoistureSensor)) return false;
         SoilMoistureSensor that = (SoilMoistureSensor) o;
-        return name.equals(that.name) &&
-                value.equals(that.value);
+        return name.equals(that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, value);
+        return Objects.hash(name);
     }
 
     public static String getReference() {
