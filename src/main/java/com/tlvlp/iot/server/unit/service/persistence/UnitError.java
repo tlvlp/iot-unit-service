@@ -6,6 +6,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+/**
+ * For persisting error messages sent by the MCUs.
+ */
 @Document
 public class UnitError {
 

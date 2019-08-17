@@ -8,6 +8,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * A Microcontroller Unit (MCU)
+ */
 @Document
 public class Unit {
     
