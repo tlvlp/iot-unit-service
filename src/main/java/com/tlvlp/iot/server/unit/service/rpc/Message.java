@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.Objects;
 
 
+/**
+ * An MQTT message sent between the server and the MCUs
+ */
 @Document(collection = "messages")
 public class Message {
 
