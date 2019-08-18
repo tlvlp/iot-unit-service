@@ -11,7 +11,7 @@ version = '1.0.0_DEV'
 sourceCompatibility = '1.8'
 def projectName = 'iot-unit-service'
 def dockerRepo = 'docker.tlvlp.com'
-def mainClass = 'com.tlvlp.iot.server.mqtt.client.Application'
+def mainClass = 'com.tlvlp.iot.server.unit.service.Application'
 def servicePort = 8200
 
 repositories {
