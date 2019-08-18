@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class TempSensorDS18B20 implements Module {
 
-    private static final String reference = "ds18b20";
+    public static final String REFERENCE = "ds18b20";
     private String name;
     private Integer value;
 
@@ -27,10 +27,6 @@ public class TempSensorDS18B20 implements Module {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public static String getReference() {
-        return reference;
     }
 
     public String getName() {

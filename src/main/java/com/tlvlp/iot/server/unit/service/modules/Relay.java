@@ -9,7 +9,7 @@ public class Relay implements Module {
         on, off
     }
 
-    private static final String reference = "relay";
+    public static final String REFERENCE = "relay";
     private String name;
     private State state;
 
@@ -32,10 +32,6 @@ public class Relay implements Module {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public static String getReference() {
-        return reference;
     }
 
     public State getState() {

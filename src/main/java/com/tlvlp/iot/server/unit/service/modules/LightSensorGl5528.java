@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class LightSensorGl5528 implements Module {
 
-    private static final String reference = "gl5528";
+    public static final String REFERENCE = "gl5528";
     private String name;
     private Integer value;
 
@@ -28,10 +28,6 @@ public class LightSensorGl5528 implements Module {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public static String getReference() {
-        return reference;
     }
 
     public String getName() {

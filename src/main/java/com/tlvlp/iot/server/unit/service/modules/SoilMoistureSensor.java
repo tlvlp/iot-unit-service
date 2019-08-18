@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class SoilMoistureSensor implements Module {
 
-    private static final String reference = "somo";
+    public static final String REFERENCE = "somo";
     private String name;
     private Integer value;
 
@@ -27,10 +27,6 @@ public class SoilMoistureSensor implements Module {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public static String getReference() {
-        return reference;
     }
 
     public String getName() {
