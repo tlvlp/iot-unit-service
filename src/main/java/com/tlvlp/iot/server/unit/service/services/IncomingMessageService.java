@@ -1,9 +1,7 @@
-package com.tlvlp.iot.server.unit.service.rpc;
+package com.tlvlp.iot.server.unit.service.services;
 
 import com.tlvlp.iot.server.unit.service.config.Properties;
 import com.tlvlp.iot.server.unit.service.modules.*;
-import com.tlvlp.iot.server.unit.service.persistence.Unit;
-import com.tlvlp.iot.server.unit.service.persistence.UnitError;
 import com.tlvlp.iot.server.unit.service.persistence.UnitErrorRepository;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
 import org.slf4j.Logger;
@@ -17,20 +15,20 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
-class MessageService {
+public class IncomingMessageService {
 
-    private static final Logger log = LoggerFactory.getLogger(MessageService.class);
+    private static final Logger log = LoggerFactory.getLogger(IncomingMessageService.class);
     private Properties properties;
     private UnitRepository repository;
     private UnitErrorRepository errorRepository;
 
-    public MessageService(Properties properties, UnitRepository repository, UnitErrorRepository errorRepository) {
+    public IncomingMessageService(Properties properties, UnitRepository repository, UnitErrorRepository errorRepository) {
         this.properties = properties;
         this.repository = repository;
         this.errorRepository = errorRepository;
     }
 
-    ResponseEntity handleIncomingMessage(Message message) {
+    public ResponseEntity handleIncomingMessage(Message message) {
         try {
             checkMessageValidity(message);
             String topic = message.getTopic();
@@ -114,7 +112,6 @@ class MessageService {
     private void updateUnit(Unit unit, Message message) {
         Set<Module> originalModules = unit.getModules();
         unit
-                .setId(message.getUnitID())
                 .setProject(message.getPayload().get("project"))
                 .setName(message.getPayload().get("name"))
                 .setActive(true)

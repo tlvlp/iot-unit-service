@@ -1,11 +1,10 @@
-package com.tlvlp.iot.server.unit.service.persistence;
+package com.tlvlp.iot.server.unit.service.services;
 
 import com.tlvlp.iot.server.unit.service.modules.Module;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 
 /**
