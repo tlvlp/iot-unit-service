@@ -14,10 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 class MessageService {
@@ -78,7 +75,7 @@ class MessageService {
                 .setArrived(message.getTimeArrived())
                 .setError(message.getPayload().get("error"));
         errorRepository.save(unitError);
-        log.info(String.format("Unit error message: %s", unitError));
+        log.info("Unit error message: {}", unitError);
     }
 
     private void handleInactiveUnit(Message message) {
@@ -87,8 +84,8 @@ class MessageService {
             Unit unitDB = unitDBOpt.get();
             unitDB.setActive(false);
             repository.save(unitDB);
-            log.info(String.format("Unit is inactive: UnitID:%s Project:%s Name:%s",
-                    unitDB.getId(), unitDB.getProject(), unitDB.getName() ));
+            log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
+                    unitDB.getId(), unitDB.getProject(), unitDB.getName());
         }
 
     }
@@ -109,9 +106,9 @@ class MessageService {
                 .setName(message.getPayload().get("name"))
                 .setActive(true)
                 .setLastSeen(LocalDateTime.now())
-                .setModules(getModulesFromPayload(message.getPayload()));
+                .setModules(parseModulesFromPayload(message.getPayload()));
         repository.save(newUnit);
-        log.info(String.format("Added new unit: %s", newUnit));
+        log.info("Added new unit: {}", newUnit);
     }
 
     private void updateUnit(Unit unit, Message message) {
@@ -122,39 +119,37 @@ class MessageService {
                 .setName(message.getPayload().get("name"))
                 .setActive(true)
                 .setLastSeen(LocalDateTime.now())
-                .setModules(getModulesFromPayload(message.getPayload()));
+                .setModules(parseModulesFromPayload(message.getPayload()));
         repository.save(unit);
         logAddedModules(unit.getId(), originalModules, unit.getModules());
         logRemovedModules(unit.getId(), originalModules, unit.getModules());
-        log.info(String.format("Updated unit: %s", unit));
+        log.info("Updated unit: {}", unit);
     }
 
     private void logAddedModules(String unitID, Set<Module> originalModules, Set<Module> newModules) {
-        newModules.removeAll(originalModules);
-        if (!newModules.isEmpty()) {
-            log.info(String.format("New modules have been added! UnitID:%s Modules:%s", unitID, newModules));
+        Set<Module> addedModules = new HashSet<>(newModules);
+        addedModules.removeAll(originalModules);
+        if (!addedModules.isEmpty()) {
+            log.info("New modules have been added! UnitID:{} Modules:{}", unitID, addedModules);
         }
     }
 
     private void logRemovedModules(String unitID, Set<Module> originalModules, Set<Module> newModules) {
-        originalModules.removeAll(newModules);
-        if (!originalModules.isEmpty()) {
-            log.warn(String.format("Modules have been removed! UnitID:%s Modules:%s", unitID, originalModules));
+        Set<Module> removedModules = new HashSet<>(originalModules);
+        removedModules.removeAll(newModules);
+        if (!removedModules.isEmpty()) {
+            log.warn("Modules have been removed! UnitID:{} Modules:{}", unitID, removedModules);
         }
     }
 
-    private Set<Module> getModulesFromPayload(Map<String, String> payload) throws IllegalArgumentException{
+    private Set<Module> parseModulesFromPayload(Map<String, String> payload) throws IllegalArgumentException{
         Set<Module> modules = new HashSet<>();
-        // Remove non-module payload elements
-        payload.remove("id");
-        payload.remove("project");
-        payload.remove("name");
-        // Parse modules
-        for (String key : payload.keySet()) {
+        Map<String, String> payloadFiltered = filterPayload(payload);
+        for (String key : payloadFiltered.keySet()) {
             try {
                 String module_ref = key.split("\\|")[0];
                 String module_name = key.split("\\|")[1];
-                String module_value = payload.get(key);
+                String module_value = payloadFiltered.get(key);
                 switch (module_ref) {
                     case Relay.REFERENCE:
                         modules.add(new Relay()
@@ -184,6 +179,16 @@ class MessageService {
             }
         }
         return  modules;
+    }
+
+    private Map<String, String> filterPayload(Map<String, String> payload) {
+        Map<String, String> payloadFiltered = new HashMap<>();
+        for (String key : payload.keySet()) {
+            if (key.contains("|")) {
+                payloadFiltered.put(key, payload.get(key));
+            }
+        }
+        return  payloadFiltered;
     }
 
 }
