@@ -18,6 +18,7 @@ public class Unit {
     private String name;
     private String project;
     private Boolean active;
+    private String controlTopic;
     private LocalDateTime lastSeen;
     private Set<Module> modules;
 
@@ -44,6 +45,7 @@ public class Unit {
                 ", name='" + name + '\'' +
                 ", project='" + project + '\'' +
                 ", active=" + active +
+                ", controlTopic='" + controlTopic + '\'' +
                 ", lastSeen=" + lastSeen +
                 ", modules=" + modules +
                 '}';
@@ -82,6 +84,15 @@ public class Unit {
 
     public Unit setActive(Boolean active) {
         this.active = active;
+        return this;
+    }
+
+    public String getControlTopic() {
+        return controlTopic;
+    }
+
+    public Unit setControlTopic(String controlTopic) {
+        this.controlTopic = controlTopic;
         return this;
     }
 
