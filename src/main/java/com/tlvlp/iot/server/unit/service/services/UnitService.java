@@ -68,20 +68,16 @@ public class UnitService {
                 .setLastSeen(LocalDateTime.now())
                 .setModules(parseModulesFromPayload(message.getPayload()));
         unitRepository.save(unit);
-        logAddedModules(unit.getId(), originalModules, unit.getModules());
-        logRemovedModules(unit.getId(), originalModules, unit.getModules());
+        logModuleChanges(unit.getId(), originalModules, unit.getModules());
         log.info("Updated unit: {}", unit);
     }
 
-    private void logAddedModules(String unitID, Set<Module> originalModules, Set<Module> newModules) {
+    private void logModuleChanges(String unitID, Set<Module> originalModules, Set<Module> newModules) {
         Set<Module> addedModules = new HashSet<>(newModules);
         addedModules.removeAll(originalModules);
         if (!addedModules.isEmpty()) {
             log.info("New modules have been added! UnitID:{} Modules:{}", unitID, addedModules);
         }
-    }
-
-    private void logRemovedModules(String unitID, Set<Module> originalModules, Set<Module> newModules) {
         Set<Module> removedModules = new HashSet<>(originalModules);
         removedModules.removeAll(newModules);
         if (!removedModules.isEmpty()) {
