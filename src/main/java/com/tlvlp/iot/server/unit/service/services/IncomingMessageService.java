@@ -29,7 +29,7 @@ public class IncomingMessageService {
         this.errorRepository = errorRepository;
     }
 
-    public ResponseEntity handleIncomingMessage(Message message) throws ResponseStatusException{
+    public ResponseEntity handleIncomingMessage(Message message) throws ResponseStatusException {
         try {
             checkMessageValidity(message);
             String topic = message.getTopic();
@@ -49,7 +49,7 @@ public class IncomingMessageService {
         }
     }
 
-    private void checkMessageValidity(Message message) throws IllegalArgumentException{
+    private void checkMessageValidity(Message message) throws IllegalArgumentException {
         if (message.getUnitID() == null) {
             throw new IllegalArgumentException("Missing UnitID");
         } else if (message.getTopic() == null) {
@@ -83,7 +83,6 @@ public class IncomingMessageService {
             createUnit(message);
         }
     }
-
 
     private void createUnit(Message message) {
         Unit newUnit = new Unit()
@@ -128,7 +127,7 @@ public class IncomingMessageService {
         }
     }
 
-    private Set<Module> parseModulesFromPayload(Map<String, String> payload) throws IllegalArgumentException{
+    private Set<Module> parseModulesFromPayload(Map<String, String> payload) throws IllegalArgumentException {
         Set<Module> modules = new HashSet<>();
         Map<String, String> payloadFiltered = filterPayload(payload);
         for (String key : payloadFiltered.keySet()) {
@@ -139,22 +138,22 @@ public class IncomingMessageService {
                 switch (module_ref) {
                     case Relay.REFERENCE:
                         modules.add(new Relay()
-                                .setName(module_name)
+                                .setId(module_name)
                                 .setState(module_value.equals("on") ? Relay.State.on : Relay.State.off));
                         break;
                     case LightSensorGl5528.REFERENCE:
                         modules.add(new LightSensorGl5528()
-                                .setName(module_name)
+                                .setId(module_name)
                                 .setValue(Integer.parseInt(module_value)));
                         break;
                     case SoilMoistureSensor.REFERENCE:
                         modules.add(new SoilMoistureSensor()
-                                .setName(module_name)
+                                .setId(module_name)
                                 .setValue(Integer.parseInt(module_value)));
                         break;
                     case TempSensorDS18B20.REFERENCE:
                         modules.add(new TempSensorDS18B20()
-                                .setName(module_name)
+                                .setId(module_name)
                                 .setValue(Integer.parseInt(module_value)));
                         break;
                     default:
@@ -164,7 +163,7 @@ public class IncomingMessageService {
                 throw new IllegalArgumentException("Malformed module reference in payload");
             }
         }
-        return  modules;
+        return modules;
     }
 
     private Map<String, String> filterPayload(Map<String, String> payload) {
@@ -174,10 +173,10 @@ public class IncomingMessageService {
                 payloadFiltered.put(key, payload.get(key));
             }
         }
-        return  payloadFiltered;
+        return payloadFiltered;
     }
 
-    private void handleUnitError(Message message) throws IllegalArgumentException{
+    private void handleUnitError(Message message) throws IllegalArgumentException {
         if (message.getPayload().get("error") == null) {
             throw new IllegalArgumentException("Missing error message in unit error payload");
         }
@@ -190,11 +189,6 @@ public class IncomingMessageService {
         errorRepository.save(unitError);
         log.info("Unit error message: {}", unitError);
     }
-
-
-
-
-
 
 
 }

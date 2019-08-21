@@ -1,19 +1,26 @@
 package com.tlvlp.iot.server.unit.service.services;
 
-import org.springframework.http.ResponseEntity;
+import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
+
 
 @Service
 public class UnitDBService {
 
+    private UnitRepository repository;
 
-    public ResponseEntity<Set<Unit>> getAllUnits() {
-        //TODO return response regarding db results
+    public UnitDBService(UnitRepository repository) {
+        this.repository = repository;
     }
 
-    public ResponseEntity<Set<Unit>> getUnitsByExample(Unit exampleUnit) {
-        //TODO return response regarding db results
+    public List<Unit> getAllUnits() {
+        return repository.findAll();
+    }
+
+    public List<Unit> getUnitsByExample(Unit exampleUnit) {
+        return repository.findAll(Example.of(exampleUnit));
     }
 }
