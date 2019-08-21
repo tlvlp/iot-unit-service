@@ -10,12 +10,14 @@ public class Relay implements Module {
 
     public static final String REFERENCE = "relay";
     private String id;
+    private String name;
     private State state;
 
     @Override
     public String toString() {
         return "Relay{" +
                 "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", state=" + state +
                 '}';
     }
@@ -33,21 +35,30 @@ public class Relay implements Module {
         return Objects.hash(id);
     }
 
-    public State getState() {
-        return state;
-    }
-
-    public Relay setState(State state) {
-        this.state = state;
-        return this;
-    }
-
     public String getId() {
         return id;
     }
 
     public Relay setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Relay setName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public Relay setState(State state) {
+        this.state = state;
         return this;
     }
 }

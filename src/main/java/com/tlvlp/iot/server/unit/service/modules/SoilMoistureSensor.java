@@ -6,12 +6,14 @@ public class SoilMoistureSensor implements Module {
 
     public static final String REFERENCE = "somo";
     private String id;
+    private String name;
     private Integer value;
 
     @Override
     public String toString() {
         return "SoilMoistureSensor{" +
                 "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';
     }
@@ -35,6 +37,15 @@ public class SoilMoistureSensor implements Module {
 
     public SoilMoistureSensor setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public SoilMoistureSensor setName(String name) {
+        this.name = name;
         return this;
     }
 

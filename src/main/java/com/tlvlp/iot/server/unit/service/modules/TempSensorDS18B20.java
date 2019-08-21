@@ -6,12 +6,14 @@ public class TempSensorDS18B20 implements Module {
 
     public static final String REFERENCE = "ds18b20";
     private String id;
+    private String name;
     private Integer value;
 
     @Override
     public String toString() {
         return "TempSensorDS18B20{" +
                 "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';
     }
@@ -35,6 +37,15 @@ public class TempSensorDS18B20 implements Module {
 
     public TempSensorDS18B20 setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public TempSensorDS18B20 setName(String name) {
+        this.name = name;
         return this;
     }
 

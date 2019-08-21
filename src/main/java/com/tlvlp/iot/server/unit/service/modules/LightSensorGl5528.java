@@ -6,6 +6,7 @@ public class LightSensorGl5528 implements Module {
 
     public static final String REFERENCE = "gl5528";
     private String id;
+    private String name;
     private Integer value;
 
 
@@ -13,6 +14,7 @@ public class LightSensorGl5528 implements Module {
     public String toString() {
         return "LightSensorGl5528{" +
                 "id='" + id + '\'' +
+                ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';
     }
@@ -36,6 +38,15 @@ public class LightSensorGl5528 implements Module {
 
     public LightSensorGl5528 setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public LightSensorGl5528 setName(String name) {
+        this.name = name;
         return this;
     }
 
