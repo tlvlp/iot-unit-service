@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class IncomingMessageResource {
+public class IncomingMessageControl {
 
     private IncomingMessageService incomingMessageService;
 
-    public IncomingMessageResource(IncomingMessageService incomingMessageService) {
+    public IncomingMessageControl(IncomingMessageService incomingMessageService) {
         this.incomingMessageService = incomingMessageService;
     }
 
-    @PostMapping("${UNIT_SERVICE_MESSAGE_RESOURCE}")
+    @PostMapping("${UNIT_SERVICE_MESSAGE_CONTROL}")
     public ResponseEntity postMessage(@RequestBody Message message) {
         return incomingMessageService.handleIncomingMessage(message);
     }

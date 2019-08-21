@@ -23,19 +23,23 @@ public class OutgoingMessageForwarder {
         this.properties = properties;
     }
 
-    public void forwardMessage(Message message) {
+    public ResponseEntity<String> forwardMessage(Message message) throws MessageFrowardingException {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(
-                    properties.MQTT_CLIENT_MESSAGE_RESOURCE_URI,
+                    properties.MQTT_CLIENT_MESSAGE_CONTROL_URI,
                     message,
                     String.class);
             log.info("Message forwarded to the MQTT Client Service: {}", message);
+            return response;
         } catch (ResourceAccessException e) {
-            log.error("MQTT Client Service is not responding: {}", e.getMessage());
+            String err = String.format("MQTT Client Service is not responding: %s", e.getMessage());
+            log.error(err);
+            throw new MessageFrowardingException(err);
         } catch (HttpServerErrorException | HttpClientErrorException e) {
-            log.error("Cannot forward message to MQTT Client Service: {}", e.getResponseBodyAsString());
+            String err = String.format("Cannot forward message to MQTT Client Service: %s", e.getResponseBodyAsString());
+            log.error(err);
+            throw new MessageFrowardingException(err);
         }
     }
-
 
 }
