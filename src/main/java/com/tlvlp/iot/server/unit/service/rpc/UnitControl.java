@@ -32,7 +32,7 @@ public class UnitControl {
         return new ResponseEntity<List<Unit>>(unitDBService.getUnitsByExample(exampleUnit), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("${UNIT_SERVICE_UNIT_REQUEST_GLOBAL_STATUS_CONTROL}")
+    @PostMapping("${UNIT_SERVICE_REQUEST_GLOBAL_STATUS_CONTROL}")
     public ResponseEntity<String> sendGlobalStatusRequest() {
         try {
             return outgoingMessageService.sendGlobalStatusRequest();

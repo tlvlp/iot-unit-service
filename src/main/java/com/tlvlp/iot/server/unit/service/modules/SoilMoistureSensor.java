@@ -11,7 +11,7 @@ public class SoilMoistureSensor implements Module {
     @Override
     public String toString() {
         return "SoilMoistureSensor{" +
-                "name='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", value=" + value +
                 '}';
     }

@@ -12,7 +12,7 @@ public class LightSensorGl5528 implements Module {
     @Override
     public String toString() {
         return "LightSensorGl5528{" +
-                "name='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", value=" + value +
                 '}';
     }

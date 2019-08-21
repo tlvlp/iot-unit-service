@@ -11,7 +11,7 @@ public class TempSensorDS18B20 implements Module {
     @Override
     public String toString() {
         return "TempSensorDS18B20{" +
-                "name='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", value=" + value +
                 '}';
     }

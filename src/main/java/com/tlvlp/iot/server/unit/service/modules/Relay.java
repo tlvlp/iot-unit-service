@@ -15,7 +15,7 @@ public class Relay implements Module {
     @Override
     public String toString() {
         return "Relay{" +
-                "name='" + id + '\'' +
+                "id='" + id + '\'' +
                 ", state=" + state +
                 '}';
     }
