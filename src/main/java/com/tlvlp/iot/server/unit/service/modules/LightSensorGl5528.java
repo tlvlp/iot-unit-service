@@ -5,14 +5,14 @@ import java.util.Objects;
 public class LightSensorGl5528 implements Module {
 
     public static final String REFERENCE = "gl5528";
-    private String name;
+    private String id;
     private Integer value;
 
 
     @Override
     public String toString() {
         return "LightSensorGl5528{" +
-                "name='" + name + '\'' +
+                "name='" + id + '\'' +
                 ", value=" + value +
                 '}';
     }
@@ -22,20 +22,20 @@ public class LightSensorGl5528 implements Module {
         if (this == o) return true;
         if (!(o instanceof LightSensorGl5528)) return false;
         LightSensorGl5528 that = (LightSensorGl5528) o;
-        return name.equals(that.name);
+        return id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public LightSensorGl5528 setName(String name) {
-        this.name = name;
+    public LightSensorGl5528 setId(String id) {
+        this.id = id;
         return this;
     }
 

@@ -1,6 +1,5 @@
 package com.tlvlp.iot.server.unit.service.modules;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Relay implements Module {
@@ -10,13 +9,13 @@ public class Relay implements Module {
     }
 
     public static final String REFERENCE = "relay";
-    private String name;
+    private String id;
     private State state;
 
     @Override
     public String toString() {
         return "Relay{" +
-                "name='" + name + '\'' +
+                "name='" + id + '\'' +
                 ", state=" + state +
                 '}';
     }
@@ -26,12 +25,12 @@ public class Relay implements Module {
         if (this == o) return true;
         if (!(o instanceof Relay)) return false;
         Relay relay = (Relay) o;
-        return name.equals(relay.name);
+        return id.equals(relay.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
     public State getState() {
@@ -43,12 +42,12 @@ public class Relay implements Module {
         return this;
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
-    public Relay setName(String name) {
-        this.name = name;
+    public Relay setId(String id) {
+        this.id = id;
         return this;
     }
 }
