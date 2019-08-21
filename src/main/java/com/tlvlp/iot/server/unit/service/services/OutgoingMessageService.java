@@ -2,18 +2,17 @@ package com.tlvlp.iot.server.unit.service.services;
 
 import com.tlvlp.iot.server.unit.service.config.Properties;
 import com.tlvlp.iot.server.unit.service.modules.Relay;
+import com.tlvlp.iot.server.unit.service.persistence.Message;
+import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
 import com.tlvlp.iot.server.unit.service.rpc.MessageFrowardingException;
 import com.tlvlp.iot.server.unit.service.rpc.OutgoingMessageForwarder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +32,7 @@ public class OutgoingMessageService {
         this.unitRepository = unitRepository;
     }
 
-    public ResponseEntity<String> sendRelayControlToUnit(String unitID, String relayID, Relay.State state)
+    public ResponseEntity<String> sendRelayControlToUnit(String unitID, String relayID, Relay.State newState)
             throws MessageFrowardingException {
         Optional<Unit> unitDB = unitRepository.findById(unitID);
         if (!unitDB.isPresent()) {
@@ -43,7 +42,7 @@ public class OutgoingMessageService {
         }
         Unit unit = unitDB.get();
         Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put(relayID, state.toString());
+        payloadMap.put(relayID, newState.toString());
        Message newMessage = new Message()
                .setTimeArrived(LocalDateTime.now())
                .setDirection(Message.Direction.OUTGOING)

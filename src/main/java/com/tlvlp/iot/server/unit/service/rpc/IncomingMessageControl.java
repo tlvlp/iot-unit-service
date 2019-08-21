@@ -1,7 +1,7 @@
 package com.tlvlp.iot.server.unit.service.rpc;
 
 import com.tlvlp.iot.server.unit.service.services.IncomingMessageService;
-import com.tlvlp.iot.server.unit.service.services.Message;
+import com.tlvlp.iot.server.unit.service.persistence.Message;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

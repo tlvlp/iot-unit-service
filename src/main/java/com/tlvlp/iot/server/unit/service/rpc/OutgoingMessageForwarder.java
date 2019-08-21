@@ -1,7 +1,7 @@
 package com.tlvlp.iot.server.unit.service.rpc;
 
 import com.tlvlp.iot.server.unit.service.config.Properties;
-import com.tlvlp.iot.server.unit.service.services.Message;
+import com.tlvlp.iot.server.unit.service.persistence.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

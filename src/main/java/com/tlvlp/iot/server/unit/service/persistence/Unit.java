@@ -1,4 +1,4 @@
-package com.tlvlp.iot.server.unit.service.services;
+package com.tlvlp.iot.server.unit.service.persistence;
 
 import com.tlvlp.iot.server.unit.service.modules.Module;
 import org.springframework.data.annotation.Id;

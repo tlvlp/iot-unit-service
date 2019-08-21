@@ -1,5 +1,6 @@
 package com.tlvlp.iot.server.unit.service.services;
 
+import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;

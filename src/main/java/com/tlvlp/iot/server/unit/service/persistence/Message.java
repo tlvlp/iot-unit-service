@@ -1,4 +1,4 @@
-package com.tlvlp.iot.server.unit.service.services;
+package com.tlvlp.iot.server.unit.service.persistence;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;

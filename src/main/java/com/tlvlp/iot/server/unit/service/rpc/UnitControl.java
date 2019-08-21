@@ -2,7 +2,7 @@ package com.tlvlp.iot.server.unit.service.rpc;
 
 import com.tlvlp.iot.server.unit.service.modules.Relay;
 import com.tlvlp.iot.server.unit.service.services.OutgoingMessageService;
-import com.tlvlp.iot.server.unit.service.services.Unit;
+import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.services.UnitDBService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
