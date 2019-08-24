@@ -47,7 +47,6 @@ public class OutgoingMessageService {
                .setTimeArrived(LocalDateTime.now())
                .setDirection(Message.Direction.OUTGOING)
                .setTopic(unit.getControlTopic())
-               .setUnitID(unit.getId())
                .setPayload(payloadMap);
        return messageForwarder.forwardMessage(newMessage);
     }
@@ -57,7 +56,6 @@ public class OutgoingMessageService {
                 .setTimeArrived(LocalDateTime.now())
                 .setDirection(Message.Direction.OUTGOING)
                 .setTopic(properties.MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST)
-                .setUnitID("global")
                 .setPayload(new HashMap<String, String>());
         return messageForwarder.forwardMessage(newMessage);
     }

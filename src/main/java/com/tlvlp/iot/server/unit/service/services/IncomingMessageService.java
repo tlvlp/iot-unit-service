@@ -49,7 +49,7 @@ public class IncomingMessageService {
     }
 
     private void checkMessageValidity(Message message) throws IllegalArgumentException {
-        if (message.getUnitID() == null) {
+        if (message.getPayload().get("unitID") == null) {
             throw new IllegalArgumentException("Missing UnitID");
         } else if (message.getTopic() == null) {
             throw new IllegalArgumentException("Missing topic");
@@ -63,7 +63,7 @@ public class IncomingMessageService {
     }
 
     private void handleInactiveUnit(Message message) {
-        Optional<Unit> unitDBOpt = unitRepository.findById(message.getUnitID());
+        Optional<Unit> unitDBOpt = unitRepository.findById(message.getPayload().get("unitID"));
         if (unitDBOpt.isPresent()) {
             Unit unitDB = unitDBOpt.get();
             unitDB.setActive(false);
@@ -75,7 +75,7 @@ public class IncomingMessageService {
     }
 
     private void handleUnitStatusChange(Message message) {
-        Optional<Unit> unitDB = unitRepository.findById(message.getUnitID());
+        Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
         if (unitDB.isPresent()) {
             updateUnit(unitDB.get(), message);
         } else {
@@ -84,11 +84,12 @@ public class IncomingMessageService {
     }
 
     private void createUnit(Message message) {
+        String unitID = message.getPayload().get("unitID");
         Unit newUnit = new Unit()
-                .setId(message.getUnitID())
+                .setId(unitID)
                 .setProject(message.getPayload().get("project"))
                 .setName(message.getPayload().get("name"))
-                .setControlTopic(getUnitControlTopic(message.getUnitID()))
+                .setControlTopic(getUnitControlTopic(unitID))
                 .setActive(true)
                 .setLastSeen(LocalDateTime.now())
                 .setModules(parseModulesFromPayload(message.getPayload()));
@@ -184,7 +185,7 @@ public class IncomingMessageService {
             throw new IllegalArgumentException("Missing error message in unit error payload");
         }
         UnitError unitError = new UnitError()
-                .setId(message.getUnitID())
+                .setId(message.getPayload().get("unitID"))
                 .setProject(message.getPayload().get("project"))
                 .setName(message.getPayload().get("name"))
                 .setArrived(message.getTimeArrived())

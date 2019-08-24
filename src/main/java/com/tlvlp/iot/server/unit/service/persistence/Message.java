@@ -22,7 +22,6 @@ public class Message {
     private LocalDateTime timeArrived;
     private Direction direction;
     private String topic;
-    private String unitID;
     private Map<String, String> payload;
 
     public Message() {
@@ -34,14 +33,13 @@ public class Message {
                 "timeArrived=" + timeArrived +
                 ", direction=" + direction +
                 ", topic='" + topic + '\'' +
-                ", unitID='" + unitID + '\'' +
                 ", payload=" + payload +
                 '}';
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(timeArrived, direction, topic, unitID, payload);
+        return Objects.hash(timeArrived, direction, topic, payload);
     }
 
     @Override
@@ -52,7 +50,6 @@ public class Message {
         return timeArrived.equals(message.timeArrived) &&
                 direction == message.direction &&
                 topic.equals(message.topic) &&
-                unitID.equals(message.unitID) &&
                 payload.equals(message.payload);
     }
 
@@ -80,15 +77,6 @@ public class Message {
 
     public Message setTopic(String topic) {
         this.topic = topic;
-        return this;
-    }
-
-    public String getUnitID() {
-        return unitID;
-    }
-
-    public Message setUnitID(String unitID) {
-        this.unitID = unitID;
         return this;
     }
 
