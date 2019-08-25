@@ -5,14 +5,14 @@ import java.util.Objects;
 public class TempSensorDS18B20 implements Module {
 
     public static final String REFERENCE = "ds18b20";
-    private String id;
+    private String moduleID;
     private String name;
     private Integer value;
 
     @Override
     public String toString() {
         return "TempSensorDS18B20{" +
-                "id='" + id + '\'' +
+                "moduleID='" + moduleID + '\'' +
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';
@@ -23,20 +23,20 @@ public class TempSensorDS18B20 implements Module {
         if (this == o) return true;
         if (!(o instanceof TempSensorDS18B20)) return false;
         TempSensorDS18B20 that = (TempSensorDS18B20) o;
-        return id.equals(that.id);
+        return moduleID.equals(that.moduleID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(moduleID);
     }
 
-    public String getId() {
-        return id;
+    public String getModuleID() {
+        return moduleID;
     }
 
-    public TempSensorDS18B20 setId(String id) {
-        this.id = id;
+    public TempSensorDS18B20 setModuleID(String moduleID) {
+        this.moduleID = moduleID;
         return this;
     }
 

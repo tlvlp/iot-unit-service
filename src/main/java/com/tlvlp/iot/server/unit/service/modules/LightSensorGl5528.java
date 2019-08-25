@@ -5,7 +5,7 @@ import java.util.Objects;
 public class LightSensorGl5528 implements Module {
 
     public static final String REFERENCE = "gl5528";
-    private String id;
+    private String moduleID;
     private String name;
     private Integer value;
 
@@ -13,7 +13,7 @@ public class LightSensorGl5528 implements Module {
     @Override
     public String toString() {
         return "LightSensorGl5528{" +
-                "id='" + id + '\'' +
+                "moduleID='" + moduleID + '\'' +
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';
@@ -24,20 +24,20 @@ public class LightSensorGl5528 implements Module {
         if (this == o) return true;
         if (!(o instanceof LightSensorGl5528)) return false;
         LightSensorGl5528 that = (LightSensorGl5528) o;
-        return id.equals(that.id);
+        return moduleID.equals(that.moduleID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(moduleID);
     }
 
-    public String getId() {
-        return id;
+    public String getModuleID() {
+        return moduleID;
     }
 
-    public LightSensorGl5528 setId(String id) {
-        this.id = id;
+    public LightSensorGl5528 setModuleID(String moduleID) {
+        this.moduleID = moduleID;
         return this;
     }
 

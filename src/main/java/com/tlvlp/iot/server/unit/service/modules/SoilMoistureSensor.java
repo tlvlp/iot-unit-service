@@ -5,14 +5,14 @@ import java.util.Objects;
 public class SoilMoistureSensor implements Module {
 
     public static final String REFERENCE = "somo";
-    private String id;
+    private String moduleID;
     private String name;
     private Integer value;
 
     @Override
     public String toString() {
         return "SoilMoistureSensor{" +
-                "id='" + id + '\'' +
+                "moduleID='" + moduleID + '\'' +
                 ", name='" + name + '\'' +
                 ", value=" + value +
                 '}';
@@ -23,20 +23,20 @@ public class SoilMoistureSensor implements Module {
         if (this == o) return true;
         if (!(o instanceof SoilMoistureSensor)) return false;
         SoilMoistureSensor that = (SoilMoistureSensor) o;
-        return id.equals(that.id);
+        return moduleID.equals(that.moduleID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(moduleID);
     }
 
-    public String getId() {
-        return id;
+    public String getModuleID() {
+        return moduleID;
     }
 
-    public SoilMoistureSensor setId(String id) {
-        this.id = id;
+    public SoilMoistureSensor setModuleID(String moduleID) {
+        this.moduleID = moduleID;
         return this;
     }
 

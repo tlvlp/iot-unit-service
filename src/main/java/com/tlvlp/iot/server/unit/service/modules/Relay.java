@@ -1,5 +1,7 @@
 package com.tlvlp.iot.server.unit.service.modules;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.Objects;
 
 public class Relay implements Module {
@@ -9,14 +11,16 @@ public class Relay implements Module {
     }
 
     public static final String REFERENCE = "relay";
-    private String id;
+    @Id
+    private String moduleID;
     private String name;
     private State state;
+
 
     @Override
     public String toString() {
         return "Relay{" +
-                "id='" + id + '\'' +
+                "moduleID='" + moduleID + '\'' +
                 ", name='" + name + '\'' +
                 ", state=" + state +
                 '}';
@@ -27,20 +31,20 @@ public class Relay implements Module {
         if (this == o) return true;
         if (!(o instanceof Relay)) return false;
         Relay relay = (Relay) o;
-        return id.equals(relay.id);
+        return moduleID.equals(relay.moduleID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(moduleID);
     }
 
-    public String getId() {
-        return id;
+    public String getModuleID() {
+        return moduleID;
     }
 
-    public Relay setId(String id) {
-        this.id = id;
+    public Relay setModuleID(String moduleID) {
+        this.moduleID = moduleID;
         return this;
     }
 

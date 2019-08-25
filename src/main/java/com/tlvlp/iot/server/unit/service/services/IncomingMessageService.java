@@ -138,25 +138,25 @@ public class IncomingMessageService {
                 switch (module_ref) {
                     case Relay.REFERENCE:
                         modules.add(new Relay()
-                                .setId(key)
+                                .setModuleID(key)
                                 .setName(module_name)
                                 .setState(module_value.equals("on") ? Relay.State.on : Relay.State.off));
                         break;
                     case LightSensorGl5528.REFERENCE:
                         modules.add(new LightSensorGl5528()
-                                .setId(key)
+                                .setModuleID(key)
                                 .setName(module_name)
                                 .setValue(Integer.parseInt(module_value)));
                         break;
                     case SoilMoistureSensor.REFERENCE:
                         modules.add(new SoilMoistureSensor()
-                                .setId(key)
+                                .setModuleID(key)
                                 .setName(module_name)
                                 .setValue(Integer.parseInt(module_value)));
                         break;
                     case TempSensorDS18B20.REFERENCE:
                         modules.add(new TempSensorDS18B20()
-                                .setId(key)
+                                .setModuleID(key)
                                 .setName(module_name)
                                 .setValue(Integer.parseInt(module_value)));
                         break;
