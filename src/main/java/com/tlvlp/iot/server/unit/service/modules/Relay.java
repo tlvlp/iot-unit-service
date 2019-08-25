@@ -11,10 +11,10 @@ public class Relay implements Module {
     }
 
     public static final String REFERENCE = "relay";
-    @Id
     private String moduleID;
     private String name;
     private State state;
+    private String unitID;
 
 
     @Override
@@ -23,6 +23,7 @@ public class Relay implements Module {
                 "moduleID='" + moduleID + '\'' +
                 ", name='" + name + '\'' +
                 ", state=" + state +
+                ", unitID='" + unitID + '\'' +
                 '}';
     }
 
@@ -63,6 +64,15 @@ public class Relay implements Module {
 
     public Relay setState(State state) {
         this.state = state;
+        return this;
+    }
+
+    public String getUnitID() {
+        return unitID;
+    }
+
+    public Relay setUnitID(String unitID) {
+        this.unitID = unitID;
         return this;
     }
 }

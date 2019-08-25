@@ -32,8 +32,18 @@ public class OutgoingMessageService {
         this.unitRepository = unitRepository;
     }
 
-    public ResponseEntity<String> sendRelayControlToUnit(String unitID, String relayID, Relay.State newState)
+    public ResponseEntity<String> sendGlobalStatusRequest() throws MessageFrowardingException {
+        Message newMessage = new Message()
+                .setTimeArrived(LocalDateTime.now())
+                .setDirection(Message.Direction.OUTGOING)
+                .setTopic(properties.MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST)
+                .setPayload(new HashMap<String, String>());
+        return messageForwarder.forwardMessage(newMessage);
+    }
+
+    public ResponseEntity<String> sendRelayControlToUnit(Relay relay)
             throws MessageFrowardingException {
+        String unitID = relay.getUnitID();
         Optional<Unit> unitDB = unitRepository.findById(unitID);
         if (!unitDB.isPresent()) {
             String err = String.format("The requested unit is not found: %s", unitID);
@@ -42,22 +52,13 @@ public class OutgoingMessageService {
         }
         Unit unit = unitDB.get();
         Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put(relayID, newState.toString());
+        payloadMap.put(relay.getModuleID(), relay.getState().toString());
        Message newMessage = new Message()
                .setTimeArrived(LocalDateTime.now())
                .setDirection(Message.Direction.OUTGOING)
                .setTopic(unit.getControlTopic())
                .setPayload(payloadMap);
        return messageForwarder.forwardMessage(newMessage);
-    }
-
-    public ResponseEntity<String> sendGlobalStatusRequest() throws MessageFrowardingException {
-        Message newMessage = new Message()
-                .setTimeArrived(LocalDateTime.now())
-                .setDirection(Message.Direction.OUTGOING)
-                .setTopic(properties.MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST)
-                .setPayload(new HashMap<String, String>());
-        return messageForwarder.forwardMessage(newMessage);
     }
 
 }

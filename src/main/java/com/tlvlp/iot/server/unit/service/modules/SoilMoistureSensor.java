@@ -8,6 +8,7 @@ public class SoilMoistureSensor implements Module {
     private String moduleID;
     private String name;
     private Integer value;
+    private String unitID;
 
     @Override
     public String toString() {
@@ -15,6 +16,7 @@ public class SoilMoistureSensor implements Module {
                 "moduleID='" + moduleID + '\'' +
                 ", name='" + name + '\'' +
                 ", value=" + value +
+                ", unitID='" + unitID + '\'' +
                 '}';
     }
 
@@ -55,6 +57,15 @@ public class SoilMoistureSensor implements Module {
 
     public SoilMoistureSensor setValue(Integer value) {
         this.value = value;
+        return this;
+    }
+
+    public String getUnitID() {
+        return unitID;
+    }
+
+    public SoilMoistureSensor setUnitID(String unitID) {
+        this.unitID = unitID;
         return this;
     }
 }

@@ -8,6 +8,7 @@ public class LightSensorGl5528 implements Module {
     private String moduleID;
     private String name;
     private Integer value;
+    private String unitID;
 
 
     @Override
@@ -16,6 +17,7 @@ public class LightSensorGl5528 implements Module {
                 "moduleID='" + moduleID + '\'' +
                 ", name='" + name + '\'' +
                 ", value=" + value +
+                ", unitID='" + unitID + '\'' +
                 '}';
     }
 
@@ -56,6 +58,15 @@ public class LightSensorGl5528 implements Module {
 
     public LightSensorGl5528 setValue(Integer value) {
         this.value = value;
+        return this;
+    }
+
+    public String getUnitID() {
+        return unitID;
+    }
+
+    public LightSensorGl5528 setUnitID(String unitID) {
+        this.unitID = unitID;
         return this;
     }
 }

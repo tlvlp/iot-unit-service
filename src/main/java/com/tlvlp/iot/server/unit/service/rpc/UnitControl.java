@@ -42,11 +42,9 @@ public class UnitControl {
     }
 
     @PostMapping("${UNIT_SERVICE_RELAY_CONTROL}")
-    public ResponseEntity<String> sendRelayControlToUnit(@RequestParam String unitID,
-                                                         @RequestParam String relayID,
-                                                         @RequestParam Relay.State newState) {
+    public ResponseEntity<String> sendRelayControlToUnit(@RequestBody Relay relay) {
         try {
-            return outgoingMessageService.sendRelayControlToUnit(unitID, relayID, newState);
+            return outgoingMessageService.sendRelayControlToUnit(relay);
         } catch (MessageFrowardingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

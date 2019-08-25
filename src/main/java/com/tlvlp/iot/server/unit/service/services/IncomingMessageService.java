@@ -97,7 +97,7 @@ public class IncomingMessageService {
                 .setControlTopic(getUnitControlTopic(unitID))
                 .setActive(true)
                 .setLastSeen(LocalDateTime.now())
-                .setModules(parseModulesFromPayload(message.getPayload()));
+                .setModules(parseModulesFromPayload(message.getPayload(), unitID));
         unitRepository.save(newUnit);
         log.info("Added new unit: {}", newUnit);
         return newUnit;
@@ -114,7 +114,7 @@ public class IncomingMessageService {
                 .setName(message.getPayload().get("name"))
                 .setActive(true)
                 .setLastSeen(LocalDateTime.now())
-                .setModules(parseModulesFromPayload(message.getPayload()));
+                .setModules(parseModulesFromPayload(message.getPayload(), unit.getId()));
         unitRepository.save(unit);
         logModuleChanges(unit.getId(), originalModules, unit.getModules());
         log.info("Updated unit: {}", unit);
@@ -134,7 +134,8 @@ public class IncomingMessageService {
         }
     }
 
-    private Set<Module> parseModulesFromPayload(Map<String, String> payload) throws IllegalArgumentException {
+    private Set<Module> parseModulesFromPayload(Map<String, String> payload, String unitID)
+            throws IllegalArgumentException {
         Set<Module> modules = new HashSet<>();
         Map<String, String> payloadFiltered = filterPayload(payload);
         for (String key : payloadFiltered.keySet()) {
@@ -147,25 +148,29 @@ public class IncomingMessageService {
                         modules.add(new Relay()
                                 .setModuleID(key)
                                 .setName(module_name)
-                                .setState(module_value.equals("on") ? Relay.State.on : Relay.State.off));
+                                .setState(module_value.equals("on") ? Relay.State.on : Relay.State.off)
+                                .setUnitID(unitID));
                         break;
                     case LightSensorGl5528.REFERENCE:
                         modules.add(new LightSensorGl5528()
                                 .setModuleID(key)
                                 .setName(module_name)
-                                .setValue(Integer.parseInt(module_value)));
+                                .setValue(Integer.parseInt(module_value))
+                                .setUnitID(unitID));
                         break;
                     case SoilMoistureSensor.REFERENCE:
                         modules.add(new SoilMoistureSensor()
                                 .setModuleID(key)
                                 .setName(module_name)
-                                .setValue(Integer.parseInt(module_value)));
+                                .setValue(Integer.parseInt(module_value))
+                                .setUnitID(unitID));
                         break;
                     case TempSensorDS18B20.REFERENCE:
                         modules.add(new TempSensorDS18B20()
                                 .setModuleID(key)
                                 .setName(module_name)
-                                .setValue(Integer.parseInt(module_value)));
+                                .setValue(Integer.parseInt(module_value))
+                                .setUnitID(unitID));
                         break;
                     default:
                         throw new IllegalArgumentException(String.format("Unrecognized module reference: %s", module_ref));
