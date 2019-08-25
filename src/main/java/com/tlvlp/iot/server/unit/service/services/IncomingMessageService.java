@@ -3,6 +3,7 @@ package com.tlvlp.iot.server.unit.service.services;
 import com.tlvlp.iot.server.unit.service.config.Properties;
 import com.tlvlp.iot.server.unit.service.modules.*;
 import com.tlvlp.iot.server.unit.service.persistence.*;
+import com.tlvlp.iot.server.unit.service.rpc.UnitUpdateReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,14 @@ public class IncomingMessageService {
     private Properties properties;
     private UnitErrorRepository errorRepository;
     private UnitRepository unitRepository;
+    private UnitUpdateReporter unitUpdateReporter;
 
     public IncomingMessageService(Properties properties, UnitRepository unitRepository,
-                                  UnitErrorRepository errorRepository) {
+                                  UnitErrorRepository errorRepository, UnitUpdateReporter unitUpdateReporter) {
         this.properties = properties;
         this.unitRepository = unitRepository;
         this.errorRepository = errorRepository;
+        this.unitUpdateReporter = unitUpdateReporter;
     }
 
     public ResponseEntity handleIncomingMessage(Message message) throws ResponseStatusException {
@@ -76,14 +79,16 @@ public class IncomingMessageService {
 
     private void handleUnitStatusChange(Message message) {
         Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
+        Unit unitUpdate;
         if (unitDB.isPresent()) {
-            updateUnit(unitDB.get(), message);
+            unitUpdate = updateUnit(unitDB.get(), message);
         } else {
-            createUnit(message);
+            unitUpdate = createUnit(message);
         }
+        sendUnitToReporting(unitUpdate);
     }
 
-    private void createUnit(Message message) {
+    private Unit createUnit(Message message) {
         String unitID = message.getPayload().get("unitID");
         Unit newUnit = new Unit()
                 .setId(unitID)
@@ -95,13 +100,14 @@ public class IncomingMessageService {
                 .setModules(parseModulesFromPayload(message.getPayload()));
         unitRepository.save(newUnit);
         log.info("Added new unit: {}", newUnit);
+        return newUnit;
     }
 
     private String getUnitControlTopic(String unitID) {
         return String.format("/units/%s/control", unitID);
     }
 
-    private void updateUnit(Unit unit, Message message) {
+    private Unit updateUnit(Unit unit, Message message) {
         Set<Module> originalModules = unit.getModules();
         unit
                 .setProject(message.getPayload().get("project"))
@@ -112,6 +118,7 @@ public class IncomingMessageService {
         unitRepository.save(unit);
         logModuleChanges(unit.getId(), originalModules, unit.getModules());
         log.info("Updated unit: {}", unit);
+        return unit;
     }
 
     private void logModuleChanges(String unitID, Set<Module> originalModules, Set<Module> newModules) {
@@ -192,6 +199,10 @@ public class IncomingMessageService {
                 .setError(message.getPayload().get("error"));
         errorRepository.save(unitError);
         log.info("Unit error message: {}", unitError);
+    }
+
+    private void sendUnitToReporting(Unit unit) {
+        unitUpdateReporter.sendUnitToReporting(unit);
     }
 
 
