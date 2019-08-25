@@ -13,7 +13,7 @@ import java.util.Objects;
 public class UnitError {
 
     @Id
-    private String id;
+    private String unitID;
     private String name;
     private String project;
     private LocalDateTime arrived;
@@ -22,7 +22,7 @@ public class UnitError {
     @Override
     public String toString() {
         return "UnitError{" +
-                "id='" + id + '\'' +
+                "unitID='" + unitID + '\'' +
                 ", name='" + name + '\'' +
                 ", project='" + project + '\'' +
                 ", arrived=" + arrived +
@@ -35,7 +35,7 @@ public class UnitError {
         if (this == o) return true;
         if (!(o instanceof UnitError)) return false;
         UnitError unitError = (UnitError) o;
-        return id.equals(unitError.id) &&
+        return unitID.equals(unitError.unitID) &&
                 name.equals(unitError.name) &&
                 project.equals(unitError.project) &&
                 arrived.equals(unitError.arrived) &&
@@ -44,15 +44,15 @@ public class UnitError {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, project, arrived, error);
+        return Objects.hash(unitID, name, project, arrived, error);
     }
 
-    public String getId() {
-        return id;
+    public String getUnitID() {
+        return unitID;
     }
 
-    public UnitError setId(String id) {
-        this.id = id;
+    public UnitError setUnitID(String unitID) {
+        this.unitID = unitID;
         return this;
     }
 

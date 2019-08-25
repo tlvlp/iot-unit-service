@@ -197,7 +197,7 @@ public class IncomingMessageService {
             throw new IllegalArgumentException("Missing error message in unit error payload");
         }
         UnitError unitError = new UnitError()
-                .setId(message.getPayload().get("unitID"))
+                .setUnitID(message.getPayload().get("unitID"))
                 .setProject(message.getPayload().get("project"))
                 .setName(message.getPayload().get("name"))
                 .setArrived(message.getTimeArrived())
