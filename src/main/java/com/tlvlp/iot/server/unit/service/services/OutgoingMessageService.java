@@ -42,13 +42,13 @@ public class OutgoingMessageService {
     }
 
     public ResponseEntity<String> sendRelayControlToUnit(Relay relay)
-            throws MessageFrowardingException {
+            throws MessageFrowardingException, IllegalArgumentException {
         String unitID = relay.getUnitID();
         Optional<Unit> unitDB = unitRepository.findById(unitID);
         if (!unitDB.isPresent()) {
             String err = String.format("The requested unit is not found: %s", unitID);
             log.error(err);
-            throw new MessageFrowardingException(err);
+            throw new IllegalArgumentException(err);
         }
         Unit unit = unitDB.get();
         Map<String, String> payloadMap = new HashMap<>();

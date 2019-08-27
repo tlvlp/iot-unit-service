@@ -120,6 +120,50 @@ Takes a Relay object in the RequestBody where all the fields are mandatory
 ```
 
 
+### POST Add scheduled event to Unit:
+
+Adds a scheduled event to the list of events in a given Unit
+
+#### Related environment variables:
+- ${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}
+- ${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT_URL}
+
+#### Fields:
+Takes a Relay object in the RequestBody where all the fields are mandatory
+- **unitID**: String - ID of the containing Unit
+- **eventID**: String - event ID
+
+```
+{
+    "eventID": "2019-08-24-9229F2B8-377F-440C-B251-23F866C927AC",
+    "unitID": "tlvlp.iot.BazsalikON-soil"
+}
+
+```
+
+
+### DELETE Removed scheduled event from Unit:
+
+Removes a scheduled event from the list of events in a given Unit
+
+#### Related environment variables:
+- ${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT}
+- ${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT_URL}
+
+#### Fields:
+Takes a Relay object in the RequestBody where all the fields are mandatory
+- **unitID**: String - ID of the containing Unit
+- **eventID**: String - event ID
+
+```
+{
+    "eventID": "2019-08-24-9229F2B8-377F-440C-B251-23F866C927AC",
+    "unitID": "tlvlp.iot.BazsalikON-soil"
+}
+
+```
+
+
 
 ## MCU-side API (MQTT) 
 Actual MQTT topics are inherited from the project's [deployment repository](https://gitlab.com/tlvlp/iot.server.deployment) via environment variables.
@@ -181,7 +225,7 @@ Actual MQTT topics are inherited from the project's [deployment repository](http
 {
     "unitID": "tlvlp.iot.BazsalikON-soil", 
     "project": "tlvlp.iot.BazsalikON", 
-    "name": "soil", 
+    "name": "soil"
 }
 ```
 

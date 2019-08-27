@@ -14,13 +14,14 @@ import java.util.Set;
 public class Unit {
     
     @Id
-    private String id;
+    private String unitID;
     private String name;
     private String project;
     private Boolean active;
     private String controlTopic;
     private LocalDateTime lastSeen;
     private Set<Module> modules;
+    private Set<String> scheduledEvents;
 
     public Unit() {
     }
@@ -30,33 +31,34 @@ public class Unit {
         if (this == o) return true;
         if (!(o instanceof Unit)) return false;
         Unit unit = (Unit) o;
-        return id.equals(unit.id);
+        return unitID.equals(unit.unitID);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        return unitID.hashCode();
     }
 
     @Override
     public String toString() {
         return "Unit{" +
-                "id='" + id + '\'' +
+                "unitID='" + unitID + '\'' +
                 ", name='" + name + '\'' +
                 ", project='" + project + '\'' +
                 ", active=" + active +
                 ", controlTopic='" + controlTopic + '\'' +
                 ", lastSeen=" + lastSeen +
                 ", modules=" + modules +
+                ", scheduledEvents=" + scheduledEvents +
                 '}';
     }
 
-    public String getId() {
-        return id;
+    public String getUnitID() {
+        return unitID;
     }
 
-    public Unit setId(String id) {
-        this.id = id;
+    public Unit setUnitID(String unitID) {
+        this.unitID = unitID;
         return this;
     }
 
@@ -78,7 +80,7 @@ public class Unit {
         return this;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 
@@ -111,6 +113,15 @@ public class Unit {
 
     public Unit setModules(Set<Module> modules) {
         this.modules = modules;
+        return this;
+    }
+
+    public Set<String> getScheduledEvents() {
+        return scheduledEvents;
+    }
+
+    public Unit setScheduledEvents(Set<String> scheduledEvents) {
+        this.scheduledEvents = scheduledEvents;
         return this;
     }
 }
