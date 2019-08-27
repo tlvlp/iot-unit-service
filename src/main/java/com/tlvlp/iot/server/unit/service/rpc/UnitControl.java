@@ -23,17 +23,17 @@ public class UnitControl {
         this.outgoingMessageService = outgoingMessageService;
     }
 
-    @GetMapping("${UNIT_SERVICE_UNIT_LIST_ALL_CONTROL}")
+    @GetMapping("${UNIT_SERVICE_API_LIST_ALL_UNIT}")
     public ResponseEntity<List<Unit>> getAllUnits() {
         return new ResponseEntity<List<Unit>>(unitService.getAllUnits(), HttpStatus.ACCEPTED);
     }
 
-    @GetMapping("${UNIT_SERVICE_UNIT_LIST_BY_EXAMPLE_CONTROL}")
+    @GetMapping("${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}")
     public ResponseEntity<List<Unit>> getUnitsByExample(@RequestBody Unit exampleUnit) {
         return new ResponseEntity<List<Unit>>(unitService.getUnitsByExample(exampleUnit), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("${UNIT_SERVICE_REQUEST_GLOBAL_STATUS_CONTROL}")
+    @PostMapping("${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}")
     public ResponseEntity<String> sendGlobalStatusRequest() {
         try {
             return outgoingMessageService.sendGlobalStatusRequest();
@@ -60,7 +60,7 @@ public class UnitControl {
         }
     }
 
-    @PostMapping("${UNIT_SERVICE_RELAY_CONTROL}")
+    @PostMapping("${UNIT_SERVICE_API_RELAY_CONTROL}")
     public ResponseEntity<String> handleRelayControl(@RequestBody Relay relay) {
         try {
             return outgoingMessageService.sendRelayControlToUnit(relay);

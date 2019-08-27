@@ -20,8 +20,8 @@ Actual API endpoints are inherited from the project's [deployment repository](ht
 Handles incoming messages
 
 #### Related environment variables:
-- ${UNIT_SERVICE_MESSAGE_CONTROL}
-- ${UNIT_SERVICE_MESSAGE_CONTROL_URI}
+- ${UNIT_SERVICE_API_INCOMING_MESSAGE}
+- ${UNIT_SERVICE_API_INCOMING_MESSAGE_URL}
 
 #### Fields:
 Takes a Message object in the RequestBody but the mandatory fields are:
@@ -45,8 +45,8 @@ Takes a Message object in the RequestBody but the mandatory fields are:
 Returns a list of Units that match all values in the example
 
 #### Related environment variables:
-- ${UNIT_SERVICE_UNIT_LIST_BY_EXAMPLE_CONTROL}
-- ${UNIT_SERVICE_UNIT_LIST_BY_EXAMPLE_CONTROL_URI}
+- ${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}
+- ${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE_URI}
 
 #### Fields:
 Takes a Unit object in the RequestBody where all the empty fields are ignored
@@ -74,8 +74,8 @@ Takes a Unit object in the RequestBody where all the empty fields are ignored
 Returns a list of Units that match all values in the example
 
 #### Related environment variables:
-- ${UNIT_SERVICE_UNIT_LIST_ALL_CONTROL}
-- ${UNIT_SERVICE_UNIT_LIST_ALL_CONTROL_URI}
+- ${UNIT_SERVICE_API_LIST_ALL_UNIT}
+- ${UNIT_SERVICE_API_LIST_ALL_UNIT_URI}
 
 #### Fields:
 Takes no arguments.
@@ -86,8 +86,8 @@ Takes no arguments.
 Sends a message to the global status request MQTT topic to which all Units must respond by sending their status.
 
 #### Related environment variables:
-- ${UNIT_SERVICE_REQUEST_GLOBAL_STATUS_CONTROL}
-- ${UNIT_SERVICE_REQUEST_GLOBAL_STATUS_CONTROL_URI}
+- ${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}
+- ${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS_URI}
 
 #### Fields:
 Takes no arguments.
@@ -99,8 +99,8 @@ Module specific control endpoint.
 Sends a message to a unit-specific MQTT control topic to manipulate the module in that given unit.
 
 #### Related environment variables:
-- ${UNIT_SERVICE_RELAY_CONTROL}
-- ${UNIT_SERVICE_RELAY_CONTROL_URI}
+- ${UNIT_SERVICE_API_RELAY_CONTROL}
+- ${UNIT_SERVICE_API_RELAY_CONTROL_URI}
 
 #### Fields:
 Takes a Relay object in the RequestBody where all the fields are mandatory

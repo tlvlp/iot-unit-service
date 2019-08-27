@@ -26,7 +26,7 @@ public class OutgoingMessageForwarder {
     public ResponseEntity<String> forwardMessage(Message message) throws MessageFrowardingException {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(
-                    properties.MQTT_CLIENT_MESSAGE_CONTROL_URI,
+                    properties.MQTT_CLIENT_API_OUTGOING_MESSAGE_URL,
                     message,
                     String.class);
             log.info("Message forwarded to the MQTT Client Service: {}", message);

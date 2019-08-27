@@ -23,7 +23,7 @@ public class UnitUpdateReporter {
     public void sendUnitToReporting(Unit unit) {
         try {
             restTemplate.postForEntity(
-                    properties.REPORTING_SERVICE_UNIT_UPDATE_CONTROL_URI,
+                    properties.REPORTING_SERVICE_API_UNIT_UPDATE_URL,
                     unit,
                     String.class);
             log.debug("Unit update sent to the Reporting service: {}", unit);

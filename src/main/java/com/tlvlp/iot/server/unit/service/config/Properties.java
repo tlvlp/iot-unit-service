@@ -8,8 +8,8 @@ public class Properties {
 
     // The service uses environment variables from the Docker container.
 
-    @Value("${MQTT_CLIENT_MESSAGE_CONTROL_URI}")
-    public String MQTT_CLIENT_MESSAGE_CONTROL_URI;
+    @Value("${MQTT_CLIENT_API_OUTGOING_MESSAGE_URL}")
+    public String MQTT_CLIENT_API_OUTGOING_MESSAGE_URL;
 
     @Value("${MCU_MQTT_TOPIC_GLOBAL_STATUS}")
     public String MCU_MQTT_TOPIC_GLOBAL_STATUS;
@@ -23,8 +23,8 @@ public class Properties {
     @Value("${MCU_MQTT_TOPIC_GLOBAL_ERROR}")
     public String MCU_MQTT_TOPIC_GLOBAL_ERROR;
 
-    @Value("${REPORTING_SERVICE_UNIT_UPDATE_CONTROL_URI}")
-    public String REPORTING_SERVICE_UNIT_UPDATE_CONTROL_URI;
+    @Value("${REPORTING_SERVICE_API_UNIT_UPDATE_URL}")
+    public String REPORTING_SERVICE_API_UNIT_UPDATE_URL;
 
 
 }
