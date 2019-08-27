@@ -9,7 +9,7 @@ This Dockerized SpringBoot-based service is responsible for all Microcontroller 
 - Schedule unit control events
 
 ## Deployment
-- This service is currently designed as **stateless**can have an arbitrary number of instances running per Docker Swarm Stack.
+- This service is currently designed as **stateless** and can have an arbitrary number of instances running per Docker Swarm Stack.
 - For settings and deployment details see the project's [deployment repository](https://gitlab.com/tlvlp/iot.server.deployment)
 
 ## Server-side API
