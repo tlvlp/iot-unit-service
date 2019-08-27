@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class UnitControl {
+public class UnitAPI {
 
     private UnitService unitService;
     private OutgoingMessageService outgoingMessageService;
 
-    public UnitControl(UnitService unitService, OutgoingMessageService outgoingMessageService) {
+    public UnitAPI(UnitService unitService, OutgoingMessageService outgoingMessageService) {
         this.unitService = unitService;
         this.outgoingMessageService = outgoingMessageService;
     }
