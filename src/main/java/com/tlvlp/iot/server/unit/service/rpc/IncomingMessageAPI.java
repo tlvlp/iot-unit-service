@@ -17,7 +17,7 @@ public class IncomingMessageAPI {
     }
 
     @PostMapping("${UNIT_SERVICE_API_INCOMING_MESSAGE}")
-    public ResponseEntity postMessage(@RequestBody Message message) {
+    public ResponseEntity handleIncomingMessage(@RequestBody Message message) {
         return incomingMessageService.handleIncomingMessage(message);
     }
 }

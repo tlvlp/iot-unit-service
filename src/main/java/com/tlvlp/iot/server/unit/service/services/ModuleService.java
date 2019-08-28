@@ -14,26 +14,17 @@ class ModuleService {
     Set<Module> parseModulesFromPayload(Map<String, String> payload, String unitID)
             throws IllegalArgumentException {
         Set<Module> modules = new HashSet<>();
-        Map<String, String> payloadFiltered = filterPayload(payload);
+        Map<String, String> payloadFiltered = filterModules(payload);
         for (String key : payloadFiltered.keySet()) {
-            try {
-                String module_ref = key.split("\\|")[0];
-                String module_name = key.split("\\|")[1];
-                Double module_value = Double.parseDouble(payloadFiltered.get(key));
-                modules.add(new Module()
-                        .setModuleID(key)
-                        .setModule(module_ref)
-                        .setName(module_name)
-                        .setValue(module_value)
-                        .setUnitID(unitID));
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new IllegalArgumentException("Malformed module reference in payload");
-            }
+            modules.add(new Module()
+                    .setModuleID(key)
+                    .setValue(Double.parseDouble(payloadFiltered.get(key)))
+                    .setUnitID(unitID));
         }
         return modules;
     }
 
-    private Map<String, String> filterPayload(Map<String, String> payload) {
+    private Map<String, String> filterModules(Map<String, String> payload) {
         Map<String, String> payloadFiltered = new HashMap<>();
         for (String key : payload.keySet()) {
             if (key.contains("|")) {

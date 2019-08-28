@@ -12,31 +12,31 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class OutgoingMessageForwarder {
+public class OutgoingMessageSender {
 
-    private static final Logger log = LoggerFactory.getLogger(OutgoingMessageForwarder.class);
+    private static final Logger log = LoggerFactory.getLogger(OutgoingMessageSender.class);
     private RestTemplate restTemplate;
     private Properties properties;
 
-    public OutgoingMessageForwarder(RestTemplate restTemplate, Properties properties) {
+    public OutgoingMessageSender(RestTemplate restTemplate, Properties properties) {
         this.restTemplate = restTemplate;
         this.properties = properties;
     }
 
-    public ResponseEntity<String> forwardMessage(Message message) throws MessageFrowardingException {
+    public ResponseEntity<String> sendMessage(Message message) throws MessageFrowardingException {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(
                     properties.MQTT_CLIENT_API_OUTGOING_MESSAGE_URL,
                     message,
                     String.class);
-            log.info("Message forwarded to the MQTT Client Service: {}", message);
+            log.info("Message sent to the MQTT Client Service: {}", message);
             return response;
         } catch (ResourceAccessException e) {
             String err = String.format("MQTT Client Service is not responding: %s", e.getMessage());
             log.error(err);
             throw new MessageFrowardingException(err);
         } catch (HttpServerErrorException | HttpClientErrorException e) {
-            String err = String.format("Cannot forward message to MQTT Client Service: %s", e.getResponseBodyAsString());
+            String err = String.format("Cannot send message to MQTT Client Service: %s", e.getResponseBodyAsString());
             log.error(err);
             throw new MessageFrowardingException(err);
         }

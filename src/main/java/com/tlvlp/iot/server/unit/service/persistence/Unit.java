@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -30,12 +31,14 @@ public class Unit {
         if (this == o) return true;
         if (!(o instanceof Unit)) return false;
         Unit unit = (Unit) o;
-        return unitID.equals(unit.unitID);
+        return unitID.equals(unit.unitID) &&
+                name.equals(unit.name) &&
+                project.equals(unit.project);
     }
 
     @Override
     public int hashCode() {
-        return unitID.hashCode();
+        return Objects.hash(unitID, name, project);
     }
 
     @Override

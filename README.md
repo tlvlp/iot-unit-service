@@ -93,7 +93,7 @@ Sends a message to the global status request MQTT topic to which all Units must 
 Takes no arguments.
 
 
-### POST Relay Control to Unit:
+### POST Module Control to Unit:
 
 Module specific control endpoint.
 Sends a message to a unit-specific MQTT control topic to manipulate the module in that given unit.
@@ -105,14 +105,12 @@ Sends a message to a unit-specific MQTT control topic to manipulate the module i
 #### Fields:
 RequestBody (all fields are mandatory):
 - **moduleID**: String - module ID
-- **name**: String - name of the Relay module
 - **value**: Double - requested value/state of the Module
 - **unitID**: String - ID of the containing Unit
 
 ```
 {
     "moduleID": "relay|growlight",
-    "name": "growlight",
     "value": 1,
     "unitID": "tlvlp.iot.BazsalikON-soil"
 }
@@ -236,9 +234,9 @@ All MQTT messages must be in JSON format.
     The Unit whose details are sent to this topic will be flagged as inactive.
 - **Posting here**: Server side MQTT Client
 - **Subscribers**: Each MCU to their own topic
-- **Payload format**: Each  message should contain *only one* Module's details where the MCU will be looking for:
-- **moduleID** of a controllable module that is implemented in the Unit
-- **value** of the module.
+- **Payload format**: Each  message should contain *only one* Module's details:
+    - **moduleID** of a controllable module that is implemented in the Unit
+    - **value** of the module.
 ```
 {
     "relay|growlight": 1
