@@ -21,24 +21,24 @@ import static org.springframework.core.env.StandardEnvironment.SYSTEM_ENVIRONMEN
 /**
  * Parses file based secrets and makes them available as new environment variables.
  * The main use-case is to parse Docker Swarm Secrets.
- *
+ * <p>
  * 1) Looks for two types of environment variables as input:
  * Secrets Folder:
- *      - Env. variable with 'SECRETS_FOLDER' in its name (only the first match is used!)
- *      - Contains the absolute location of the folder containing the secret files
+ * - Env. variable with 'SECRETS_FOLDER' in its name (only the first match is used!)
+ * - Contains the absolute location of the folder containing the secret files
  * Secret Files:
- *      - Env. variables with 'SECRET_FILE' in their names (all matches are used!)
- *      - Each contains the name of a secret file
- *
+ * - Env. variables with 'SECRET_FILE' in their names (all matches are used!)
+ * - Each contains the name of a secret file
+ * <p>
  * 2) Parses the contents of each existing secret file
- *
+ * <p>
  * 3) Saves each secret under a new env. variable with a "_PARSED" postfix
  * eg. MY_DB_PASS_SECRET_FILE's contents will be available under MY_DB_PASS_SECRET_FILE_PARSED
- *
+ * <p>
  * NOTE:
- *      This {@code EnvironmentPostProcessor} class must be registered under resources/META-INF/spring.factories
- *      eg.:
- *      org.springframework.boot.env.EnvironmentPostProcessor = PATH.IN.PROJECT.SecretsLoader
+ * This {@code EnvironmentPostProcessor} class must be registered under resources/META-INF/spring.factories
+ * eg.:
+ * org.springframework.boot.env.EnvironmentPostProcessor = PATH.IN.PROJECT.SecretsLoader
  */
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class SecretsLoader implements EnvironmentPostProcessor {

@@ -1,10 +1,9 @@
 package com.tlvlp.iot.server.unit.service.services;
 
-import com.tlvlp.iot.server.unit.service.modules.*;
-import com.tlvlp.iot.server.unit.service.persistence.Message;
+import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
-import com.tlvlp.iot.server.unit.service.rpc.UnitUpdateReporter;
+import com.tlvlp.iot.server.unit.service.rpc.Reporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
@@ -20,13 +19,13 @@ public class UnitService {
 
     private static final Logger log = LoggerFactory.getLogger(UnitService.class);
     private UnitRepository repository;
-    private UnitUpdateReporter unitUpdateReporter;
+    private Reporter reporter;
     private ModuleService moduleService;
 
-    public UnitService(UnitRepository repository, UnitUpdateReporter unitUpdateReporter,
+    public UnitService(UnitRepository repository, Reporter reporter,
                        ModuleService moduleService) {
         this.repository = repository;
-        this.unitUpdateReporter = unitUpdateReporter;
+        this.reporter = reporter;
         this.moduleService = moduleService;
     }
 
@@ -85,7 +84,7 @@ public class UnitService {
     }
 
     void sendUnitUpdateToReporting(Unit unit) {
-        unitUpdateReporter.sendUnitToReporting(unit);
+        reporter.sendUnitToReporting(unit);
     }
 
     public Unit addScheduledEventToUnit(Map<String, String> requestBody) {
@@ -107,7 +106,7 @@ public class UnitService {
                 new IllegalArgumentException("Scheduled event cannot be removed! Unit does not exist: " + unitID));
         Unit unit = unitDB.get();
         Set<String> unitEvents = unit.getScheduledEvents();
-        if(isDeletion) {
+        if (isDeletion) {
             unitEvents.remove(eventID);
             log.info("Removed scheduled event from unit: unitID:{} eventID:{}", unitID, eventID);
         } else {

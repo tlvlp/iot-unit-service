@@ -24,14 +24,14 @@ Handles incoming messages
 - ${UNIT_SERVICE_API_INCOMING_MESSAGE_URL}
 
 #### Fields:
-Takes a Message object in the RequestBody but the mandatory fields are:
+RequestBody:
 - **topic**: String containing the targeted MQTT topic
 - **payload**: Map<String, String> of the payload to be sent to the subscribers of the topic
-- all the other fields from the Message object are ignored.
+NOTE: Honoring the contents of the payload is the responsibility of the MCUs.
 
 ```
 {
-    "topic": "/units/my_test_unitID/control",
+    "topic": "/global/status",
     "payload": 
         {
             "first": "value",
@@ -106,14 +106,14 @@ Sends a message to a unit-specific MQTT control topic to manipulate the module i
 Takes a Relay object in the RequestBody where all the fields are mandatory
 - **moduleID**: String - module ID
 - **name**: String - name of the Relay module
-- **state**: Relay.State - requested state of the relay
+- **value**: Double - requested value/state of the Module
 - **unitID**: String - ID of the containing Unit
 
 ```
 {
     "moduleID": "relay|growlight",
     "name": "growlight",
-    "state": "on",
+    "value": 1,
     "unitID": "tlvlp.iot.BazsalikON-soil"
 }
 
@@ -181,9 +181,9 @@ Actual MQTT topics are inherited from the project's [deployment repository](http
     "unitID": "tlvlp.iot.BazsalikON-soil", 
     "project": "tlvlp.iot.BazsalikON", 
     "name": "soil", 
-    "relay|growlight": "off", 
-    "gl5528|lightPercent": "85", 
-    "somo|soilMoisturePercent": "80"
+    "relay|growlight": 0, 
+    "gl5528|lightPercent": 85, 
+    "somo|soilMoisturePercent": 80
 }
 ```
 
@@ -236,10 +236,10 @@ Actual MQTT topics are inherited from the project's [deployment repository](http
 - **Posting here**: Server side MQTT Client
 - **Subscribers**: Each MCU to their own topic
 - **Payload format**: Each  message should contain *only one* Module's details where the MCU will be looking for:
-    - **moduleID** of a controllable module that is implemented in the Unit
-    - **value/state** of the module.
+- **moduleID** of a controllable module that is implemented in the Unit
+- **value** of the module.
 ```
 {
-    "relay|growlight": "on"
+    "relay|growlight": 1
 }
 ```

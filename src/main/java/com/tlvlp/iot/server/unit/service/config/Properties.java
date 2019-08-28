@@ -23,8 +23,8 @@ public class Properties {
     @Value("${MCU_MQTT_TOPIC_GLOBAL_ERROR}")
     public String MCU_MQTT_TOPIC_GLOBAL_ERROR;
 
-    @Value("${REPORTING_SERVICE_API_UNIT_UPDATE_URL}")
-    public String REPORTING_SERVICE_API_UNIT_UPDATE_URL;
+    @Value("${REPORTING_SERVICE_API_POST_VALUES_URL}")
+    public String REPORTING_SERVICE_API_POST_VALUES_URL;
 
 
 }
