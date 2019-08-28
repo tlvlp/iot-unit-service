@@ -5,5 +5,5 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
 
 public interface UnitErrorRepository
         extends MongoRepository<UnitError, String>, QueryByExampleExecutor<UnitError> {
-    
+
 }
