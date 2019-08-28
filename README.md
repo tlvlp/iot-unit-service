@@ -24,7 +24,7 @@ Handles incoming messages
 - ${UNIT_SERVICE_API_INCOMING_MESSAGE_URL}
 
 #### Fields:
-RequestBody:
+RequestBody (all fields are mandatory):
 - **topic**: String containing the targeted MQTT topic
 - **payload**: Map<String, String> of the payload to be sent to the subscribers of the topic
 NOTE: Honoring the contents of the payload is the responsibility of the MCUs.
@@ -49,7 +49,7 @@ Returns a list of Units that match all values in the example
 - ${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE_URI}
 
 #### Fields:
-Takes a Unit object in the RequestBody where all the empty fields are ignored
+RequestBody (all the empty fields are ignored):
 - **id**: String - the unique ID of the unit
 - **name**: String - name of the unit
 - **project**: String - related project name 
@@ -103,7 +103,7 @@ Sends a message to a unit-specific MQTT control topic to manipulate the module i
 - ${UNIT_SERVICE_API_RELAY_CONTROL_URI}
 
 #### Fields:
-Takes a Relay object in the RequestBody where all the fields are mandatory
+RequestBody (all fields are mandatory):
 - **moduleID**: String - module ID
 - **name**: String - name of the Relay module
 - **value**: Double - requested value/state of the Module
@@ -129,7 +129,7 @@ Adds a scheduled event to the list of events in a given Unit
 - ${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT_URL}
 
 #### Fields:
-Takes a Relay object in the RequestBody where all the fields are mandatory
+RequestBody (all fields are mandatory):
 - **unitID**: String - ID of the containing Unit
 - **eventID**: String - event ID
 
@@ -151,7 +151,7 @@ Removes a scheduled event from the list of events in a given Unit
 - ${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT_URL}
 
 #### Fields:
-Takes a Relay object in the RequestBody where all the fields are mandatory
+RequestBody (all fields are mandatory):
 - **unitID**: String - ID of the containing Unit
 - **eventID**: String - event ID
 
@@ -167,6 +167,7 @@ Takes a Relay object in the RequestBody where all the fields are mandatory
 
 ## MCU-side API (MQTT) 
 Actual MQTT topics are inherited from the project's [deployment repository](https://gitlab.com/tlvlp/iot.server.deployment) via environment variables.
+All MQTT messages must be in JSON format.
 
 ### TOPIC: Global Status
 - **Environment variable**: ${MCU_MQTT_TOPIC_GLOBAL_STATUS}

@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.Optional;
 
 @Service
 public class IncomingMessageService {
@@ -54,8 +54,6 @@ public class IncomingMessageService {
             throw new IllegalArgumentException("Missing UnitID");
         } else if (message.getTopic() == null) {
             throw new IllegalArgumentException("Missing topic");
-        } else if (message.getTimeArrived() == null) {
-            throw new IllegalArgumentException("Missing timeArrived");
         } else if (message.getPayload().get("name") == null) {
             throw new IllegalArgumentException("Missing name in payload");
         } else if (message.getPayload().get("project") == null) {
@@ -64,13 +62,13 @@ public class IncomingMessageService {
     }
 
     private void handleInactiveUnit(Message message) {
-        Optional<Unit> unitDBOpt = unitRepository.findById(message.getPayload().get("unitID"));
-        if (unitDBOpt.isPresent()) {
-            Unit unitDB = unitDBOpt.get();
-            unitDB.setActive(false);
-            unitRepository.save(unitDB);
+        Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
+        if (unitDB.isPresent()) {
+            Unit unit = unitDB.get();
+            unit.setActive(false);
+            unitRepository.save(unit);
             log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
-                    unitDB.getUnitID(), unitDB.getProject(), unitDB.getName());
+                    unit.getUnitID(), unit.getProject(), unit.getName());
         }
 
     }
@@ -87,7 +85,6 @@ public class IncomingMessageService {
     }
 
 
-
     private void handleUnitError(Message message) throws IllegalArgumentException {
         if (message.getPayload().get("error") == null) {
             throw new IllegalArgumentException("Missing error message in unit error payload");
@@ -96,7 +93,6 @@ public class IncomingMessageService {
                 .setUnitID(message.getPayload().get("unitID"))
                 .setProject(message.getPayload().get("project"))
                 .setName(message.getPayload().get("name"))
-                .setArrived(message.getTimeArrived())
                 .setError(message.getPayload().get("error"));
         errorRepository.save(unitError);
         log.info("Unit error message: {}", unitError);
