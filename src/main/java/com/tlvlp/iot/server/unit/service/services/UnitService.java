@@ -1,5 +1,6 @@
 package com.tlvlp.iot.server.unit.service.services;
 
+import com.tlvlp.iot.server.unit.service.persistence.Message;
 import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
@@ -84,7 +85,7 @@ public class UnitService {
     }
 
     void sendUnitUpdateToReporting(Unit unit) {
-        reporter.sendUnitToReporting(unit);
+        reporter.sendReport(unit);
     }
 
     public Unit addScheduledEventToUnit(Map<String, String> requestBody) {

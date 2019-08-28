@@ -1,8 +1,8 @@
 package com.tlvlp.iot.server.unit.service.services;
 
 import com.tlvlp.iot.server.unit.service.config.Properties;
-import com.tlvlp.iot.server.unit.service.modules.Relay;
 import com.tlvlp.iot.server.unit.service.persistence.Message;
+import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
 import com.tlvlp.iot.server.unit.service.rpc.MessageFrowardingException;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -33,32 +32,37 @@ public class OutgoingMessageService {
     }
 
     public ResponseEntity<String> sendGlobalStatusRequest() throws MessageFrowardingException {
-        Message newMessage = new Message()
-                .setTimeArrived(LocalDateTime.now())
-                .setDirection(Message.Direction.OUTGOING)
+        Message message = new Message()
                 .setTopic(properties.MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST)
-                .setPayload(new HashMap<String, String>());
-        return messageForwarder.forwardMessage(newMessage);
+                .setPayload(new HashMap<>());
+        return messageForwarder.forwardMessage(message);
     }
 
-    public ResponseEntity<String> sendRelayControlToUnit(Relay relay)
+    public ResponseEntity<String> sendModuleControlToUnit(Module module)
             throws MessageFrowardingException, IllegalArgumentException {
-        String unitID = relay.getUnitID();
-        Optional<Unit> unitDB = unitRepository.findById(unitID);
-        if (!unitDB.isPresent()) {
-            String err = String.format("The requested unit is not found: %s", unitID);
-            log.error(err);
-            throw new IllegalArgumentException(err);
-        }
-        Unit unit = unitDB.get();
+        Unit unit = getUnitIfModuleIsValid(module);
         Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put(relay.getModuleID(), relay.getState().toString());
-       Message newMessage = new Message()
-               .setTimeArrived(LocalDateTime.now())
-               .setDirection(Message.Direction.OUTGOING)
-               .setTopic(unit.getControlTopic())
-               .setPayload(payloadMap);
-       return messageForwarder.forwardMessage(newMessage);
+        payloadMap.put(module.getModuleID(), module.getValue().toString());
+        Message message = new Message()
+                .setTopic(unit.getControlTopic())
+                .setPayload(payloadMap);
+        return messageForwarder.forwardMessage(message);
+    }
+
+    private Unit getUnitIfModuleIsValid(Module module) throws IllegalArgumentException {
+        String unitID = module.getUnitID();
+        Optional<Unit> unitDB = unitRepository.findById(unitID);
+        unitDB.orElseThrow(() -> new IllegalArgumentException(
+                String.format("Cannot send module control: unitID is not in the database: %s", unitID)));
+        Unit unit = unitDB.get();
+        boolean isModuleInUnit =
+                unit.getModules().stream().anyMatch(m -> m.getModuleID().equals(module.getModuleID()));
+        if(!isModuleInUnit) {
+            throw new IllegalArgumentException(
+                    String.format("Cannot send module control: module is not present in unit: moduleID:%s unitID:%s",
+                            module.getModuleID(), unitID));
+        }
+        return unit;
     }
 
 }

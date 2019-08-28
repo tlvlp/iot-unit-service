@@ -1,8 +1,8 @@
 package com.tlvlp.iot.server.unit.service.rpc;
 
-import com.tlvlp.iot.server.unit.service.modules.Relay;
-import com.tlvlp.iot.server.unit.service.services.OutgoingMessageService;
+import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
+import com.tlvlp.iot.server.unit.service.services.OutgoingMessageService;
 import com.tlvlp.iot.server.unit.service.services.UnitService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,10 +60,10 @@ public class UnitAPI {
         }
     }
 
-    @PostMapping("${UNIT_SERVICE_API_RELAY_CONTROL}")
-    public ResponseEntity<String> handleRelayControl(@RequestBody Relay relay) {
+    @PostMapping("${UNIT_SERVICE_API_MODULE_CONTROL}")
+    public ResponseEntity<String> handleModuleControl(@RequestBody Module module) {
         try {
-            return outgoingMessageService.sendRelayControlToUnit(relay);
+            return outgoingMessageService.sendModuleControlToUnit(module);
         } catch (MessageFrowardingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {
