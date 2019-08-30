@@ -75,12 +75,12 @@ public class UnitService {
         Set<Module> addedModules = new HashSet<>(newModules);
         addedModules.removeAll(originalModules);
         if (!addedModules.isEmpty()) {
-            log.info("New modules have been added! UnitID:{} Modules:{}", unitID, addedModules);
+            log.info("New modules have been added: {}", addedModules);
         }
         Set<Module> removedModules = new HashSet<>(originalModules);
         removedModules.removeAll(newModules);
         if (!removedModules.isEmpty()) {
-            log.warn("Modules have been removed! UnitID:{} Modules:{}", unitID, removedModules);
+            log.warn("Modules have been removed: {}", removedModules);
         }
     }
 
