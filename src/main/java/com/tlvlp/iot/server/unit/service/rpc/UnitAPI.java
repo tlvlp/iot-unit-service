@@ -2,13 +2,17 @@ package com.tlvlp.iot.server.unit.service.rpc;
 
 import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
+import com.tlvlp.iot.server.unit.service.persistence.UnitLog;
 import com.tlvlp.iot.server.unit.service.services.OutgoingMessageComposer;
+import com.tlvlp.iot.server.unit.service.services.UnitLogService;
 import com.tlvlp.iot.server.unit.service.services.UnitService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +20,12 @@ import java.util.Map;
 public class UnitAPI {
 
     private UnitService unitService;
+    private UnitLogService unitLogService;
     private OutgoingMessageComposer outgoingMessageComposer;
 
-    public UnitAPI(UnitService unitService, OutgoingMessageComposer outgoingMessageComposer) {
+    public UnitAPI(UnitService unitService, UnitLogService unitLogService, OutgoingMessageComposer outgoingMessageComposer) {
         this.unitService = unitService;
+        this.unitLogService = unitLogService;
         this.outgoingMessageComposer = outgoingMessageComposer;
     }
 
@@ -69,5 +75,14 @@ public class UnitAPI {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @GetMapping("${UNIT_SERVICE_API_GET_UNIT_LOGS}")
+    public ResponseEntity<List<UnitLog>> getUnitLogs(@RequestParam String unitID,
+                                                     @RequestParam
+                                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timeFrom,
+                                                     @RequestParam
+                                                     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timeTo) {
+        return new ResponseEntity<>(unitLogService.getUnitLogs(unitID, timeFrom, timeTo), HttpStatus.OK);
     }
 }

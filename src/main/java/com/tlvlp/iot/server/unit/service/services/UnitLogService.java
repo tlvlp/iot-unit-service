@@ -34,4 +34,14 @@ class UnitLogService {
         return String.format("%s-LOG-%S", LocalDate.now().toString(), UUID.randomUUID().toString());
     }
 
+    public List<UnitLog> getUnitLogs(String unitID, LocalDateTime timeFrom, LocalDateTime timeTo) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("unitID").is(unitID));
+        query.addCriteria(Criteria.where("arrived").gte(timeFrom).lt(timeTo));
+        query.with(Sort.by(Sort.Direction.ASC, "arrived"));
+        query.fields()
+                .include("arrived")
+                .include("logEntry");
+        return mongoTemplate.find(query, UnitLog.class);
+    }
 }
