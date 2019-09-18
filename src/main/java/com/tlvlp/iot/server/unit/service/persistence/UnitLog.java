@@ -6,18 +6,15 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-/**
- * For persisting error messages sent by the MCUs.
- */
 @Document
-public class UnitError {
+public class UnitLog {
 
     @Id
     private String unitID;
     private String name;
     private String project;
     private LocalDateTime arrived;
-    private String error;
+    private String logEntry;
 
     @Override
     public String toString() {
@@ -26,32 +23,32 @@ public class UnitError {
                 ", name='" + name + '\'' +
                 ", project='" + project + '\'' +
                 ", arrived=" + arrived +
-                ", error='" + error + '\'' +
+                ", error='" + logEntry + '\'' +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UnitError)) return false;
-        UnitError unitError = (UnitError) o;
-        return unitID.equals(unitError.unitID) &&
-                name.equals(unitError.name) &&
-                project.equals(unitError.project) &&
-                arrived.equals(unitError.arrived) &&
-                error.equals(unitError.error);
+        if (!(o instanceof UnitLog)) return false;
+        UnitLog unitLog = (UnitLog) o;
+        return unitID.equals(unitLog.unitID) &&
+                name.equals(unitLog.name) &&
+                project.equals(unitLog.project) &&
+                arrived.equals(unitLog.arrived) &&
+                logEntry.equals(unitLog.logEntry);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(unitID, name, project, arrived, error);
+        return Objects.hash(unitID, name, project, arrived, logEntry);
     }
 
     public String getUnitID() {
         return unitID;
     }
 
-    public UnitError setUnitID(String unitID) {
+    public UnitLog setUnitID(String unitID) {
         this.unitID = unitID;
         return this;
     }
@@ -60,7 +57,7 @@ public class UnitError {
         return name;
     }
 
-    public UnitError setName(String name) {
+    public UnitLog setName(String name) {
         this.name = name;
         return this;
     }
@@ -69,7 +66,7 @@ public class UnitError {
         return project;
     }
 
-    public UnitError setProject(String project) {
+    public UnitLog setProject(String project) {
         this.project = project;
         return this;
     }
@@ -78,17 +75,17 @@ public class UnitError {
         return arrived;
     }
 
-    public UnitError setArrived(LocalDateTime arrived) {
+    public UnitLog setArrived(LocalDateTime arrived) {
         this.arrived = arrived;
         return this;
     }
 
-    public String getError() {
-        return error;
+    public String getLogEntry() {
+        return logEntry;
     }
 
-    public UnitError setError(String error) {
-        this.error = error;
+    public UnitLog setLogEntry(String logEntry) {
+        this.logEntry = logEntry;
         return this;
     }
 }

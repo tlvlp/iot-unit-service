@@ -13,16 +13,16 @@ import java.util.HashMap;
 import java.util.Optional;
 
 @Service
-public class IncomingMessageService {
+public class IncomingMessageHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(IncomingMessageService.class);
+    private static final Logger log = LoggerFactory.getLogger(IncomingMessageHandler.class);
     private Properties properties;
-    private UnitErrorRepository errorRepository;
+    private UnitLogRepository errorRepository;
     private UnitRepository unitRepository;
     private UnitService unitService;
 
 
-    public IncomingMessageService(Properties properties, UnitErrorRepository errorRepository,
+    public IncomingMessageHandler(Properties properties, UnitLogRepository errorRepository,
                                   UnitRepository unitRepository, UnitService unitService) {
         this.properties = properties;
         this.errorRepository = errorRepository;
@@ -36,9 +36,9 @@ public class IncomingMessageService {
             String topic = message.getTopic();
             HashMap<String, Object> responseMap = new HashMap<>();
             if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_ERROR())) {
-                UnitError unitError = handleUnitError(message);
+                UnitLog unitLog = handleUnitError(message);
                 responseMap.put("type", "error");
-                responseMap.put("content", unitError);
+                responseMap.put("content", unitLog);
                 return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
             } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_INACTIVE())) {
                 handleInactiveUnit(message);
@@ -95,18 +95,18 @@ public class IncomingMessageService {
     }
 
 
-    private UnitError handleUnitError(Message message) throws IllegalArgumentException {
+    private UnitLog handleUnitError(Message message) throws IllegalArgumentException {
         if (message.getPayload().get("error") == null) {
             throw new IllegalArgumentException("Missing error message in unit error payload");
         }
-        UnitError unitError = new UnitError()
+        UnitLog unitLog = new UnitLog()
                 .setUnitID(message.getPayload().get("unitID"))
                 .setProject(message.getPayload().get("project"))
                 .setName(message.getPayload().get("name"))
-                .setError(message.getPayload().get("error"));
-        errorRepository.save(unitError);
-        log.info("Unit error message: {}", unitError);
-        return unitError;
+                .setLogEntry(message.getPayload().get("error"));
+        errorRepository.save(unitLog);
+        log.info("Unit error message: {}", unitLog);
+        return unitLog;
     }
 
 

@@ -15,14 +15,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class OutgoingMessageService {
+public class OutgoingMessageComposer {
 
     private Properties properties;
     private OutgoingMessageSender messageForwarder;
     private UnitRepository unitRepository;
 
-    public OutgoingMessageService(Properties properties, OutgoingMessageSender messageForwarder,
-                                  UnitRepository unitRepository) {
+    public OutgoingMessageComposer(Properties properties, OutgoingMessageSender messageForwarder,
+                                   UnitRepository unitRepository) {
         this.properties = properties;
         this.messageForwarder = messageForwarder;
         this.unitRepository = unitRepository;
