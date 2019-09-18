@@ -10,6 +10,7 @@ import java.util.Objects;
 public class UnitLog {
 
     @Id
+    private String logID;
     private String unitID;
     private String name;
     private String project;
@@ -18,30 +19,36 @@ public class UnitLog {
 
     @Override
     public String toString() {
-        return "UnitError{" +
-                "unitID='" + unitID + '\'' +
+        return "UnitLog{" +
+                "logID='" + logID + '\'' +
+                ", unitID='" + unitID + '\'' +
                 ", name='" + name + '\'' +
                 ", project='" + project + '\'' +
                 ", arrived=" + arrived +
-                ", error='" + logEntry + '\'' +
+                ", logEntry='" + logEntry + '\'' +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UnitLog)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         UnitLog unitLog = (UnitLog) o;
-        return unitID.equals(unitLog.unitID) &&
-                name.equals(unitLog.name) &&
-                project.equals(unitLog.project) &&
-                arrived.equals(unitLog.arrived) &&
-                logEntry.equals(unitLog.logEntry);
+        return logID.equals(unitLog.logID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(unitID, name, project, arrived, logEntry);
+        return Objects.hash(logID);
+    }
+
+    public String getLogID() {
+        return logID;
+    }
+
+    public UnitLog setLogID(String logID) {
+        this.logID = logID;
+        return this;
     }
 
     public String getUnitID() {

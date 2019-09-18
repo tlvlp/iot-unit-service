@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -21,14 +20,16 @@ public class IncomingMessageHandler {
     private UnitLogRepository logRepository;
     private UnitRepository unitRepository;
     private UnitService unitService;
+    private UnitLogService unitLogService;
 
 
     public IncomingMessageHandler(Properties properties, UnitLogRepository logRepository,
-                                  UnitRepository unitRepository, UnitService unitService) {
+                                  UnitRepository unitRepository, UnitService unitService, UnitLogService unitLogService) {
         this.properties = properties;
         this.logRepository = logRepository;
         this.unitRepository = unitRepository;
         this.unitService = unitService;
+        this.unitLogService = unitLogService;
     }
 
     public ResponseEntity handleIncomingMessage(Message message) throws ResponseStatusException {
@@ -93,12 +94,7 @@ public class IncomingMessageHandler {
             Unit unit = unitDB.get();
             unit.setActive(false);
             unitRepository.save(unit);
-            UnitLog unitLog = new UnitLog()
-                    .setUnitID(message.getPayload().get("unitID"))
-                    .setProject(message.getPayload().get("project"))
-                    .setName(message.getPayload().get("name"))
-                    .setArrived(LocalDateTime.now())
-                    .setLogEntry("Unit became inactive");
+            UnitLog unitLog = unitLogService.getUnitLogInactiveFromMessage(message);
             logRepository.save(unitLog);
             log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
                     unit.getUnitID(), unit.getProject(), unit.getName());
@@ -111,12 +107,7 @@ public class IncomingMessageHandler {
         if (message.getPayload().get("error") == null) {
             throw new IllegalArgumentException("Missing error message in unit error payload");
         }
-        UnitLog unitLog = new UnitLog()
-                .setUnitID(message.getPayload().get("unitID"))
-                .setProject(message.getPayload().get("project"))
-                .setName(message.getPayload().get("name"))
-                .setArrived(LocalDateTime.now())
-                .setLogEntry(message.getPayload().get("error"));
+        UnitLog unitLog = unitLogService.getUnitLogErrorFromMessage(message);
         logRepository.save(unitLog);
         log.info("Unit error message: {}", unitLog);
         return unitLog;
