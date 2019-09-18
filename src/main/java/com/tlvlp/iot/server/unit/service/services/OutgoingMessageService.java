@@ -7,8 +7,6 @@ import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
 import com.tlvlp.iot.server.unit.service.rpc.MessageFrowardingException;
 import com.tlvlp.iot.server.unit.service.rpc.OutgoingMessageSender;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +30,7 @@ public class OutgoingMessageService {
 
     public ResponseEntity<String> sendGlobalStatusRequest() throws MessageFrowardingException {
         Message message = new Message()
-                .setTopic(properties.MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST)
+                .setTopic(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST())
                 .setPayload(new HashMap<>());
         return messageForwarder.sendMessage(message);
     }

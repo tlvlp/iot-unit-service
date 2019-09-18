@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -33,16 +34,25 @@ public class IncomingMessageService {
         try {
             checkMessageValidity(message);
             String topic = message.getTopic();
-            if (topic.equals(properties.MCU_MQTT_TOPIC_GLOBAL_ERROR)) {
-                handleUnitError(message);
-            } else if (topic.equals(properties.MCU_MQTT_TOPIC_GLOBAL_INACTIVE)) {
+            HashMap<String, Object> responseMap = new HashMap<>();
+            if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_ERROR())) {
+                UnitError unitError = handleUnitError(message);
+                responseMap.put("type", "error");
+                responseMap.put("content", unitError);
+                return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
+            } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_INACTIVE())) {
                 handleInactiveUnit(message);
-            } else if (topic.equals(properties.MCU_MQTT_TOPIC_GLOBAL_STATUS)) {
-                handleUnitStatusChange(message);
+                responseMap.put("type", "inactive");
+                return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
+            } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS())) {
+                Unit updatedUnit = handleUnitStatusChange(message);
+                responseMap.put("type", "error");
+                responseMap.put("content", updatedUnit);
+                return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
             } else {
                 throw new IllegalArgumentException(String.format("Unknown topic: %s", topic));
             }
-            return new ResponseEntity<String>("ok", HttpStatus.ACCEPTED);
+
         } catch (IllegalArgumentException e) {
             log.error("Error processing message! {}", e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -73,7 +83,7 @@ public class IncomingMessageService {
 
     }
 
-    private void handleUnitStatusChange(Message message) {
+    private Unit handleUnitStatusChange(Message message) {
         Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
         Unit unitUpdate;
         if (unitDB.isPresent()) {
@@ -81,11 +91,11 @@ public class IncomingMessageService {
         } else {
             unitUpdate = unitService.createUnitFromMessage(message);
         }
-        unitService.sendUnitUpdateToReporting(unitUpdate);
+        return unitUpdate;
     }
 
 
-    private void handleUnitError(Message message) throws IllegalArgumentException {
+    private UnitError handleUnitError(Message message) throws IllegalArgumentException {
         if (message.getPayload().get("error") == null) {
             throw new IllegalArgumentException("Missing error message in unit error payload");
         }
@@ -96,6 +106,7 @@ public class IncomingMessageService {
                 .setError(message.getPayload().get("error"));
         errorRepository.save(unitError);
         log.info("Unit error message: {}", unitError);
+        return unitError;
     }
 
 

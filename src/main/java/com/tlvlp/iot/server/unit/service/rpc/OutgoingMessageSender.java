@@ -26,17 +26,20 @@ public class OutgoingMessageSender {
     public ResponseEntity<String> sendMessage(Message message) throws MessageFrowardingException {
         try {
             ResponseEntity<String> response = restTemplate.postForEntity(
-                    properties.MQTT_CLIENT_API_OUTGOING_MESSAGE_URL,
+                    String.format("http://%s:%s%s",
+                            properties.getAPI_GATEWAY_NAME(),
+                            properties.getAPI_GATEWAY_PORT(),
+                            properties.getAPI_GATEWAY_API_OUTGOING_MQTT_MESSAGE()),
                     message,
                     String.class);
-            log.info("Message sent to the MQTT Client Service: {}", message);
+            log.info("Message sent: {}", message);
             return response;
         } catch (ResourceAccessException e) {
-            String err = String.format("MQTT Client Service is not responding: %s", e.getMessage());
+            String err = String.format("API Gateway is not responding: %s", e.getMessage());
             log.error(err);
             throw new MessageFrowardingException(err);
         } catch (HttpServerErrorException | HttpClientErrorException e) {
-            String err = String.format("Cannot send message to MQTT Client Service: %s", e.getResponseBodyAsString());
+            String err = String.format("Cannot send message to API Gateway: %s", e.getResponseBodyAsString());
             log.error(err);
             throw new MessageFrowardingException(err);
         }

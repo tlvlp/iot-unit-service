@@ -8,23 +8,53 @@ public class Properties {
 
     // The service uses environment variables from the Docker container.
 
-    @Value("${MQTT_CLIENT_API_OUTGOING_MESSAGE_URL}")
-    public String MQTT_CLIENT_API_OUTGOING_MESSAGE_URL;
+    @Value("${API_GATEWAY_API_OUTGOING_MQTT_MESSAGE}")
+    private String API_GATEWAY_API_OUTGOING_MQTT_MESSAGE;
+
+    @Value("${API_GATEWAY_NAME}")
+    private String API_GATEWAY_NAME;
+
+    @Value("${API_GATEWAY_PORT}")
+    private String API_GATEWAY_PORT;
 
     @Value("${MCU_MQTT_TOPIC_GLOBAL_STATUS}")
-    public String MCU_MQTT_TOPIC_GLOBAL_STATUS;
+    private String MCU_MQTT_TOPIC_GLOBAL_STATUS;
 
     @Value("${MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST}")
-    public String MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST;
+    private String MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST;
 
     @Value("${MCU_MQTT_TOPIC_GLOBAL_INACTIVE}")
-    public String MCU_MQTT_TOPIC_GLOBAL_INACTIVE;
+    private String MCU_MQTT_TOPIC_GLOBAL_INACTIVE;
 
     @Value("${MCU_MQTT_TOPIC_GLOBAL_ERROR}")
-    public String MCU_MQTT_TOPIC_GLOBAL_ERROR;
-
-    @Value("${REPORTING_SERVICE_API_POST_VALUES_URL}")
-    public String REPORTING_SERVICE_API_POST_VALUES_URL;
+    private String MCU_MQTT_TOPIC_GLOBAL_ERROR;
 
 
+    public String getAPI_GATEWAY_API_OUTGOING_MQTT_MESSAGE() {
+        return API_GATEWAY_API_OUTGOING_MQTT_MESSAGE;
+    }
+
+    public String getAPI_GATEWAY_NAME() {
+        return API_GATEWAY_NAME;
+    }
+
+    public String getAPI_GATEWAY_PORT() {
+        return API_GATEWAY_PORT;
+    }
+
+    public String getMCU_MQTT_TOPIC_GLOBAL_STATUS() {
+        return MCU_MQTT_TOPIC_GLOBAL_STATUS;
+    }
+
+    public String getMCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST() {
+        return MCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST;
+    }
+
+    public String getMCU_MQTT_TOPIC_GLOBAL_INACTIVE() {
+        return MCU_MQTT_TOPIC_GLOBAL_INACTIVE;
+    }
+
+    public String getMCU_MQTT_TOPIC_GLOBAL_ERROR() {
+        return MCU_MQTT_TOPIC_GLOBAL_ERROR;
+    }
 }

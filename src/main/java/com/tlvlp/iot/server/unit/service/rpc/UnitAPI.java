@@ -25,12 +25,12 @@ public class UnitAPI {
 
     @GetMapping("${UNIT_SERVICE_API_LIST_ALL_UNIT}")
     public ResponseEntity<List<Unit>> getAllUnits() {
-        return new ResponseEntity<List<Unit>>(unitService.getAllUnits(), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(unitService.getAllUnits(), HttpStatus.OK);
     }
 
     @GetMapping("${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}")
     public ResponseEntity<List<Unit>> getUnitsByExample(@RequestBody Unit exampleUnit) {
-        return new ResponseEntity<List<Unit>>(unitService.getUnitsByExample(exampleUnit), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(unitService.getUnitsByExample(exampleUnit), HttpStatus.OK);
     }
 
     @PostMapping("${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}")
@@ -54,7 +54,7 @@ public class UnitAPI {
     @DeleteMapping("${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT}")
     public ResponseEntity<Unit> deleteScheduledEvent(@RequestBody Map<String, String> requestBody) {
         try {
-            return new ResponseEntity<>(unitService.deleteScheduledEventFromUnit(requestBody), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(unitService.deleteScheduledEventFromUnit(requestBody), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

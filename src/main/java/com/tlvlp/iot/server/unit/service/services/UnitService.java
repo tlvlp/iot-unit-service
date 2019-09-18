@@ -4,7 +4,6 @@ import com.tlvlp.iot.server.unit.service.persistence.Message;
 import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
-import com.tlvlp.iot.server.unit.service.rpc.Reporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Example;
@@ -20,13 +19,10 @@ public class UnitService {
 
     private static final Logger log = LoggerFactory.getLogger(UnitService.class);
     private UnitRepository repository;
-    private Reporter reporter;
     private ModuleService moduleService;
 
-    public UnitService(UnitRepository repository, Reporter reporter,
-                       ModuleService moduleService) {
+    public UnitService(UnitRepository repository, ModuleService moduleService) {
         this.repository = repository;
-        this.reporter = reporter;
         this.moduleService = moduleService;
     }
 
@@ -82,10 +78,6 @@ public class UnitService {
         if (!removedModules.isEmpty()) {
             log.warn("Modules have been removed: {}", removedModules);
         }
-    }
-
-    void sendUnitUpdateToReporting(Unit unit) {
-        reporter.sendReport(unit);
     }
 
     public Unit addScheduledEventToUnit(Map<String, String> requestBody) {
