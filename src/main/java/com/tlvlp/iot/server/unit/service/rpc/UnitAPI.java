@@ -23,7 +23,8 @@ public class UnitAPI {
     private UnitLogService unitLogService;
     private OutgoingMessageComposer outgoingMessageComposer;
 
-    public UnitAPI(UnitService unitService, UnitLogService unitLogService, OutgoingMessageComposer outgoingMessageComposer) {
+    public UnitAPI(UnitService unitService, UnitLogService unitLogService,
+                   OutgoingMessageComposer outgoingMessageComposer) {
         this.unitService = unitService;
         this.unitLogService = unitLogService;
         this.outgoingMessageComposer = outgoingMessageComposer;

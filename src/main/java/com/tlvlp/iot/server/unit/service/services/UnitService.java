@@ -88,15 +88,15 @@ public class UnitService {
         }
     }
 
-    public Unit addScheduledEventToUnit(Map<String, String> requestBody) {
+    public Unit addScheduledEventToUnit(Map<String, String> requestBody) throws IllegalArgumentException {
         return handleEventChange(requestBody, false);
     }
 
-    public Unit deleteScheduledEventFromUnit(Map<String, String> requestBody) {
+    public Unit deleteScheduledEventFromUnit(Map<String, String> requestBody) throws IllegalArgumentException {
         return handleEventChange(requestBody, true);
     }
 
-    private Unit handleEventChange(Map<String, String> requestBody, Boolean isDeletion) {
+    private Unit handleEventChange(Map<String, String> requestBody, Boolean isDeletion) throws IllegalArgumentException {
         String unitID = requestBody.get("unitID");
         String eventID = requestBody.get("eventID");
         if (!isValidString(unitID) || !isValidString(eventID)) {
@@ -104,7 +104,8 @@ public class UnitService {
         }
         Optional<Unit> unitDB = repository.findById(unitID);
         unitDB.orElseThrow(() ->
-                new IllegalArgumentException("Scheduled event cannot be removed! Unit does not exist: " + unitID));
+                new IllegalArgumentException(String.format(
+                        "Scheduled event cannot be removed! Unit does not exist: %s", unitID)));
         Unit unit = unitDB.get();
         Set<String> unitEvents = unit.getScheduledEvents();
         if (isDeletion) {

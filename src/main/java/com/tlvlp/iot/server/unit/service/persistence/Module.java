@@ -4,16 +4,16 @@ import java.util.Objects;
 
 public class Module {
 
+    private String unitID;
     private String moduleID;
     private Double value;
-    private String unitID;
 
     @Override
     public String toString() {
         return "Module{" +
-                "moduleID='" + moduleID + '\'' +
+                "unitID='" + unitID + '\'' +
+                ", moduleID='" + moduleID + '\'' +
                 ", value=" + value +
-                ", unitID='" + unitID + '\'' +
                 '}';
     }
 
