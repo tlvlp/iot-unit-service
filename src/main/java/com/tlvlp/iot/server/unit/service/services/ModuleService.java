@@ -15,12 +15,17 @@ class ModuleService {
             throws IllegalArgumentException {
         Set<Module> modules = new HashSet<>();
         Map<String, String> payloadFiltered = filterModules(payload);
-        for (String key : payloadFiltered.keySet()) {
-            modules.add(new Module()
-                    .setModuleID(key)
-                    .setValue(Double.parseDouble(payloadFiltered.get(key)))
-                    .setUnitID(unitID));
+        try {
+            for (String key : payloadFiltered.keySet()) {
+                modules.add(new Module()
+                        .setModuleID(key)
+                        .setValue(Double.parseDouble(payloadFiltered.get(key)))
+                        .setUnitID(unitID));
+            }
+        } catch (NumberFormatException | NullPointerException e) {
+            throw new IllegalArgumentException("Unable to parse module value.", e);
         }
+
         return modules;
     }
 
