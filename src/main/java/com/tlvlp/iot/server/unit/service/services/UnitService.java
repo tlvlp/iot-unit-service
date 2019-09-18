@@ -34,6 +34,14 @@ public class UnitService {
         return repository.findAll(Example.of(exampleUnit, ExampleMatcher.matching().withIgnoreNullValues()));
     }
 
+    public Optional<Unit> getUnitByID(String unitID) {
+        return repository.findById(unitID);
+    }
+
+    void saveUnit(Unit unit) {
+        repository.save(unit);
+    }
+
     Unit createUnitFromMessage(Message message) {
         String unitID = message.getPayload().get("unitID");
         Unit newUnit = new Unit()

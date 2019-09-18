@@ -28,14 +28,14 @@ public class OutgoingMessageComposer {
         this.unitRepository = unitRepository;
     }
 
-    public ResponseEntity<String> sendGlobalStatusRequest() throws MessageFrowardingException {
+    public ResponseEntity<String> composeGlobalStatusRequest() throws MessageFrowardingException {
         Message message = new Message()
                 .setTopic(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST())
                 .setPayload(new HashMap<>());
         return messageForwarder.sendMessage(message);
     }
 
-    public ResponseEntity<String> sendModuleControlToUnit(Module module)
+    public ResponseEntity<String> composeModuleControlMessage(Module module)
             throws MessageFrowardingException, IllegalArgumentException {
         Unit unit = getUnitIfModuleIsValid(module);
         Map<String, String> payloadMap = new HashMap<>();

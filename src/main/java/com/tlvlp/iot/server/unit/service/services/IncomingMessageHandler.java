@@ -1,7 +1,9 @@
 package com.tlvlp.iot.server.unit.service.services;
 
 import com.tlvlp.iot.server.unit.service.config.Properties;
-import com.tlvlp.iot.server.unit.service.persistence.*;
+import com.tlvlp.iot.server.unit.service.persistence.Message;
+import com.tlvlp.iot.server.unit.service.persistence.Unit;
+import com.tlvlp.iot.server.unit.service.persistence.UnitLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,17 +19,12 @@ public class IncomingMessageHandler {
 
     private static final Logger log = LoggerFactory.getLogger(IncomingMessageHandler.class);
     private Properties properties;
-    private UnitLogRepository logRepository;
-    private UnitRepository unitRepository;
     private UnitService unitService;
     private UnitLogService unitLogService;
 
 
-    public IncomingMessageHandler(Properties properties, UnitLogRepository logRepository,
-                                  UnitRepository unitRepository, UnitService unitService, UnitLogService unitLogService) {
+    public IncomingMessageHandler(Properties properties, UnitService unitService, UnitLogService unitLogService) {
         this.properties = properties;
-        this.logRepository = logRepository;
-        this.unitRepository = unitRepository;
         this.unitService = unitService;
         this.unitLogService = unitLogService;
     }
@@ -49,10 +46,10 @@ public class IncomingMessageHandler {
                     responseMap.put("content", unitLog);
                     return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
                 }
-                return new ResponseEntity(HttpStatus.ACCEPTED);
+                return new ResponseEntity(HttpStatus.OK);
             } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS())) {
                 Unit updatedUnit = handleUnitStatusChange(message);
-                responseMap.put("type", "error");
+                responseMap.put("type", "status");
                 responseMap.put("content", updatedUnit);
                 return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
             } else {
@@ -78,26 +75,23 @@ public class IncomingMessageHandler {
     }
 
     private Unit handleUnitStatusChange(Message message) {
-        Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
-        Unit unitUpdate;
+        Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
         if (unitDB.isPresent()) {
-            unitUpdate = unitService.updateUnitFromMessage(unitDB.get(), message);
+            return unitService.updateUnitFromMessage(unitDB.get(), message);
         } else {
-            unitUpdate = unitService.createUnitFromMessage(message);
+            return unitService.createUnitFromMessage(message);
         }
-        return unitUpdate;
     }
 
     private Optional<UnitLog> handleInactiveUnit(Message message) {
-        Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
+        Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
         if (unitDB.isPresent()) {
             Unit unit = unitDB.get();
             unit.setActive(false);
-            unitRepository.save(unit);
-            UnitLog unitLog = unitLogService.getUnitLogInactiveFromMessage(message);
-            logRepository.save(unitLog);
+            unitService.saveUnit(unit);
             log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
                     unit.getUnitID(), unit.getProject(), unit.getName());
+            UnitLog unitLog = unitLogService.saveUnitLogInactiveFromMessage(message);
             return Optional.of(unitLog);
         }
         return Optional.empty();
@@ -107,8 +101,7 @@ public class IncomingMessageHandler {
         if (message.getPayload().get("error") == null) {
             throw new IllegalArgumentException("Missing error message in unit error payload");
         }
-        UnitLog unitLog = unitLogService.getUnitLogErrorFromMessage(message);
-        logRepository.save(unitLog);
+        UnitLog unitLog = unitLogService.saveUnitLogErrorFromMessage(message);
         log.info("Unit error message: {}", unitLog);
         return unitLog;
     }

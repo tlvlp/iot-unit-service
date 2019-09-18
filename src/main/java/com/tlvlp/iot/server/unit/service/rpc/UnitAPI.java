@@ -42,7 +42,7 @@ public class UnitAPI {
     @PostMapping("${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}")
     public ResponseEntity<String> sendGlobalStatusRequest() {
         try {
-            return outgoingMessageComposer.sendGlobalStatusRequest();
+            return outgoingMessageComposer.composeGlobalStatusRequest();
         } catch (MessageFrowardingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
@@ -58,7 +58,7 @@ public class UnitAPI {
     }
 
     @DeleteMapping("${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT}")
-    public ResponseEntity<Unit> deleteScheduledEvent(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Unit> deleteScheduledEventFromUnit(@RequestBody Map<String, String> requestBody) {
         try {
             return new ResponseEntity<>(unitService.deleteScheduledEventFromUnit(requestBody), HttpStatus.OK);
         } catch (IllegalArgumentException e) {
@@ -67,9 +67,9 @@ public class UnitAPI {
     }
 
     @PostMapping("${UNIT_SERVICE_API_MODULE_CONTROL}")
-    public ResponseEntity<String> handleModuleControl(@RequestBody Module module) {
+    public ResponseEntity<String> getModuleControlMessage(@RequestBody Module module) {
         try {
-            return outgoingMessageComposer.sendModuleControlToUnit(module);
+            return outgoingMessageComposer.composeModuleControlMessage(module);
         } catch (MessageFrowardingException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         } catch (IllegalArgumentException e) {

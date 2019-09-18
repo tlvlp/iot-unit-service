@@ -2,23 +2,41 @@ package com.tlvlp.iot.server.unit.service.services;
 
 import com.tlvlp.iot.server.unit.service.persistence.Message;
 import com.tlvlp.iot.server.unit.service.persistence.UnitLog;
+import com.tlvlp.iot.server.unit.service.persistence.UnitLogRepository;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
-class UnitLogService {
+public class UnitLogService {
 
-    UnitLog getUnitLogInactiveFromMessage(Message message) {
-        return getUnitLogBase(message)
-                .setLogEntry("Unit became inactive");
+    private UnitLogRepository repository;
+    private MongoTemplate mongoTemplate;
+
+    public UnitLogService(UnitLogRepository repository, MongoTemplate mongoTemplate) {
+        this.repository = repository;
+        this.mongoTemplate = mongoTemplate;
     }
 
-    UnitLog getUnitLogErrorFromMessage(Message message) {
-        return getUnitLogBase(message)
+    public UnitLog saveUnitLogInactiveFromMessage(Message message) {
+        UnitLog log = getUnitLogBase(message)
+                .setLogEntry("Unit became inactive");
+        repository.save(log);
+        return log;
+    }
+
+    public UnitLog saveUnitLogErrorFromMessage(Message message) {
+        UnitLog log = getUnitLogBase(message)
                 .setLogEntry(message.getPayload().get("error"));
+        repository.save(log);
+        return log;
     }
 
     private UnitLog getUnitLogBase(Message message) {
