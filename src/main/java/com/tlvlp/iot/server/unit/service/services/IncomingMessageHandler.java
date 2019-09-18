@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Optional;
 
@@ -17,15 +18,15 @@ public class IncomingMessageHandler {
 
     private static final Logger log = LoggerFactory.getLogger(IncomingMessageHandler.class);
     private Properties properties;
-    private UnitLogRepository errorRepository;
+    private UnitLogRepository logRepository;
     private UnitRepository unitRepository;
     private UnitService unitService;
 
 
-    public IncomingMessageHandler(Properties properties, UnitLogRepository errorRepository,
+    public IncomingMessageHandler(Properties properties, UnitLogRepository logRepository,
                                   UnitRepository unitRepository, UnitService unitService) {
         this.properties = properties;
-        this.errorRepository = errorRepository;
+        this.logRepository = logRepository;
         this.unitRepository = unitRepository;
         this.unitService = unitService;
     }
@@ -41,9 +42,13 @@ public class IncomingMessageHandler {
                 responseMap.put("content", unitLog);
                 return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
             } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_INACTIVE())) {
-                handleInactiveUnit(message);
-                responseMap.put("type", "inactive");
-                return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
+                Optional<UnitLog> unitLog = handleInactiveUnit(message);
+                if (unitLog.isPresent()) {
+                    responseMap.put("type", "inactive");
+                    responseMap.put("content", unitLog);
+                    return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
+                }
+                return new ResponseEntity(HttpStatus.ACCEPTED);
             } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS())) {
                 Unit updatedUnit = handleUnitStatusChange(message);
                 responseMap.put("type", "error");
@@ -71,18 +76,6 @@ public class IncomingMessageHandler {
         }
     }
 
-    private void handleInactiveUnit(Message message) {
-        Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
-        if (unitDB.isPresent()) {
-            Unit unit = unitDB.get();
-            unit.setActive(false);
-            unitRepository.save(unit);
-            log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
-                    unit.getUnitID(), unit.getProject(), unit.getName());
-        }
-
-    }
-
     private Unit handleUnitStatusChange(Message message) {
         Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
         Unit unitUpdate;
@@ -94,6 +87,25 @@ public class IncomingMessageHandler {
         return unitUpdate;
     }
 
+    private Optional<UnitLog> handleInactiveUnit(Message message) {
+        Optional<Unit> unitDB = unitRepository.findById(message.getPayload().get("unitID"));
+        if (unitDB.isPresent()) {
+            Unit unit = unitDB.get();
+            unit.setActive(false);
+            unitRepository.save(unit);
+            UnitLog unitLog = new UnitLog()
+                    .setUnitID(message.getPayload().get("unitID"))
+                    .setProject(message.getPayload().get("project"))
+                    .setName(message.getPayload().get("name"))
+                    .setArrived(LocalDateTime.now())
+                    .setLogEntry("Unit became inactive");
+            logRepository.save(unitLog);
+            log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
+                    unit.getUnitID(), unit.getProject(), unit.getName());
+            return Optional.of(unitLog);
+        }
+        return Optional.empty();
+    }
 
     private UnitLog handleUnitError(Message message) throws IllegalArgumentException {
         if (message.getPayload().get("error") == null) {
@@ -103,8 +115,9 @@ public class IncomingMessageHandler {
                 .setUnitID(message.getPayload().get("unitID"))
                 .setProject(message.getPayload().get("project"))
                 .setName(message.getPayload().get("name"))
+                .setArrived(LocalDateTime.now())
                 .setLogEntry(message.getPayload().get("error"));
-        errorRepository.save(unitLog);
+        logRepository.save(unitLog);
         log.info("Unit error message: {}", unitLog);
         return unitLog;
     }
