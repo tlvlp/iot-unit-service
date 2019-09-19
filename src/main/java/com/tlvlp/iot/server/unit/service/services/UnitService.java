@@ -55,30 +55,30 @@ public class UnitService {
                 .setActive(true)
                 .setLastSeen(LocalDateTime.now())
                 .setModules(moduleService.parseModulesFromPayload(message.getPayload(), unitID));
-        repository.save(newUnit);
-        log.info("Added new unit: {}", newUnit);
-        return newUnit;
+        var unitSaved = repository.save(newUnit);
+        log.info("Added new unit: {}", unitSaved);
+        return unitSaved;
     }
 
     private String getUnitControlTopic(String unitID) {
         return String.format("/units/%s/control", unitID);
     }
 
-    Unit updateUnitFromMessage(Unit unit, Message message) {
-        Set<Module> originalModules = unit.getModules();
-        unit
+    Unit updateUnitFromMessage(Unit unitUpdate, Message message) {
+        Set<Module> originalModules = unitUpdate.getModules();
+        unitUpdate
                 .setProject(message.getPayload().get("project"))
                 .setName(message.getPayload().get("name"))
                 .setActive(true)
                 .setLastSeen(LocalDateTime.now())
-                .setModules(moduleService.parseModulesFromPayload(message.getPayload(), unit.getUnitID()));
-        repository.save(unit);
-        logModuleChanges(unit.getUnitID(), originalModules, unit.getModules());
-        log.info("Updated unit: {}", unit);
-        return unit;
+                .setModules(moduleService.parseModulesFromPayload(message.getPayload(), unitUpdate.getUnitID()));
+        var unitSaved = repository.save(unitUpdate);
+        logModuleChanges(originalModules, unitSaved.getModules());
+        log.info("Updated unit: {}", unitSaved);
+        return unitSaved;
     }
 
-    private void logModuleChanges(String unitID, Set<Module> originalModules, Set<Module> newModules) {
+    private void logModuleChanges(Set<Module> originalModules, Set<Module> newModules) {
         Set<Module> addedModules = new HashSet<>(newModules);
         addedModules.removeAll(originalModules);
         if (!addedModules.isEmpty()) {
@@ -109,8 +109,7 @@ public class UnitService {
             log.info("Added scheduled event to unit: unitID:{} eventID:{}", unitID, eventID);
         }
         unit.setScheduledEvents(unitEvents);
-        repository.save(unit);
-        return unit;
+        return repository.save(unit);
     }
 
     private Boolean isValidString(String str) {
