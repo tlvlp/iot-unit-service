@@ -6,8 +6,6 @@ import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,6 +20,9 @@ public class IncomingMessageHandler {
     private UnitService unitService;
     private UnitLogService unitLogService;
 
+    public static String RESPONSE_TYPE = "type";
+    public static String RESPONSE_RESULT = "result";
+
 
     public IncomingMessageHandler(Properties properties, UnitService unitService, UnitLogService unitLogService) {
         this.properties = properties;
@@ -29,36 +30,28 @@ public class IncomingMessageHandler {
         this.unitLogService = unitLogService;
     }
 
-    public ResponseEntity handleIncomingMessage(Message message) throws ResponseStatusException {
+    public HashMap<String, Object> handleIncomingMessage(Message message) throws ResponseStatusException {
         try {
             checkMessageValidity(message);
             String topic = message.getTopic();
             HashMap<String, Object> responseMap = new HashMap<>();
             if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_ERROR())) {
-                UnitLog unitLog = handleUnitError(message);
-                responseMap.put("type", "error");
-                responseMap.put("content", unitLog);
-                return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
+                responseMap.put(RESPONSE_TYPE, "error");
+                responseMap.put(RESPONSE_RESULT, handleUnitError(message));
             } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_INACTIVE())) {
-                Optional<UnitLog> unitLog = handleInactiveUnit(message);
-                if (unitLog.isPresent()) {
-                    responseMap.put("type", "inactive");
-                    responseMap.put("content", unitLog);
-                    return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
-                }
-                return new ResponseEntity(HttpStatus.OK);
+                responseMap.put(RESPONSE_TYPE, "inactive");
+                responseMap.put(RESPONSE_RESULT, handleInactiveUnit(message));
             } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS())) {
-                Unit updatedUnit = handleUnitStatusChange(message);
-                responseMap.put("type", "status");
-                responseMap.put("content", updatedUnit);
-                return new ResponseEntity<HashMap>(responseMap, HttpStatus.ACCEPTED);
+                responseMap.put(RESPONSE_TYPE, "status");
+                responseMap.put(RESPONSE_RESULT, handleUnitStatusChange(message));
             } else {
                 throw new IllegalArgumentException(String.format("Unknown topic: %s", topic));
             }
-
+            return responseMap;
         } catch (IllegalArgumentException e) {
-            log.error("Error processing message! {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            var err = String.format("Error processing message! %s", e.getMessage());
+            log.error(err);
+            throw new IllegalArgumentException(err);
         }
     }
 
@@ -74,29 +67,6 @@ public class IncomingMessageHandler {
         }
     }
 
-    private Unit handleUnitStatusChange(Message message) {
-        Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
-        if (unitDB.isPresent()) {
-            return unitService.updateUnitFromMessage(unitDB.get(), message);
-        } else {
-            return unitService.createUnitFromMessage(message);
-        }
-    }
-
-    private Optional<UnitLog> handleInactiveUnit(Message message) {
-        Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
-        if (unitDB.isPresent()) {
-            Unit unit = unitDB.get();
-            unit.setActive(false);
-            unitService.saveUnit(unit);
-            log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
-                    unit.getUnitID(), unit.getProject(), unit.getName());
-            UnitLog unitLog = unitLogService.saveUnitLogInactiveFromMessage(message);
-            return Optional.of(unitLog);
-        }
-        return Optional.empty();
-    }
-
     private UnitLog handleUnitError(Message message) throws IllegalArgumentException {
         if (message.getPayload().get("error") == null) {
             throw new IllegalArgumentException("Missing error message in unit error payload");
@@ -104,6 +74,29 @@ public class IncomingMessageHandler {
         UnitLog unitLog = unitLogService.saveUnitLogErrorFromMessage(message);
         log.info("Unit error message: {}", unitLog);
         return unitLog;
+    }
+
+    private UnitLog handleInactiveUnit(Message message) throws IllegalArgumentException {
+        Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
+        if (unitDB.isPresent()) {
+            Unit unit = unitDB.get();
+            unit.setActive(false);
+            unitService.saveUnit(unit);
+            log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
+                    unit.getUnitID(), unit.getProject(), unit.getName());
+            return unitLogService.saveUnitLogInactiveFromMessage(message);
+        } else {
+            throw new IllegalArgumentException("Unit doesn't exist so cannot be set to inactive status");
+        }
+    }
+
+    private Unit handleUnitStatusChange(Message message) {
+        Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
+        if (unitDB.isPresent()) {
+            return unitService.updateUnitFromMessage(unitDB.get(), message);
+        } else {
+            return unitService.createUnitFromMessage(message);
+        }
     }
 
 
