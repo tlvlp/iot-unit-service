@@ -28,6 +28,7 @@ import static org.mockito.BDDMockito.then;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Unit service tests")
 class UnitServiceTest {
+
     @Mock
     private UnitRepository repository;
     @Mock
@@ -109,33 +110,5 @@ class UnitServiceTest {
         sharedUnitAssertions(savedUnit);
         assertTrue(savedUnit.getLastSeen().isAfter(oldDate), "Last seen time is updated");
         assertFalse(savedUnit.getModules().isEmpty(), "New module is added");
-    }
-
-    @Test
-    @DisplayName("Add scheduled event to Unit")
-    void addScheduledEventToUnitTest() {
-        // given
-        // TODO - complete test
-
-        // when
-
-
-        // then
-
-
-    }
-
-    @Test
-    @DisplayName("Remove scheduled event from Unit")
-    void deleteScheduledEventFromUnitTest() {
-        // given
-        // TODO - complete test
-
-        // when
-
-
-        // then
-
-
     }
 }

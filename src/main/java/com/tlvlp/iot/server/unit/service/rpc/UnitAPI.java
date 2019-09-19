@@ -14,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 public class UnitAPI {
@@ -50,18 +49,24 @@ public class UnitAPI {
     }
 
     @PostMapping("${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}")
-    public ResponseEntity<Unit> addScheduledEventToUnit(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Unit> addScheduledEventToUnit(@RequestParam String unitID,
+                                                        @RequestParam String eventID) {
         try {
-            return new ResponseEntity<>(unitService.addScheduledEventToUnit(requestBody), HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(
+                    unitService.modifyUnitScheduledEventList(unitID, eventID, false),
+                    HttpStatus.ACCEPTED);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @DeleteMapping("${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT}")
-    public ResponseEntity<Unit> deleteScheduledEventFromUnit(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Unit> deleteScheduledEventFromUnit(@RequestParam String unitID,
+                                                             @RequestParam String eventID) {
         try {
-            return new ResponseEntity<>(unitService.deleteScheduledEventFromUnit(requestBody), HttpStatus.OK);
+            return new ResponseEntity<>(
+                    unitService.modifyUnitScheduledEventList(unitID, eventID, true),
+                    HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

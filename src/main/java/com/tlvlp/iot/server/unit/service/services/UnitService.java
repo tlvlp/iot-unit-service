@@ -11,7 +11,10 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 
 @Service
@@ -88,17 +91,7 @@ public class UnitService {
         }
     }
 
-    public Unit addScheduledEventToUnit(Map<String, String> requestBody) throws IllegalArgumentException {
-        return handleEventChange(requestBody, false);
-    }
-
-    public Unit deleteScheduledEventFromUnit(Map<String, String> requestBody) throws IllegalArgumentException {
-        return handleEventChange(requestBody, true);
-    }
-
-    private Unit handleEventChange(Map<String, String> requestBody, Boolean isDeletion) throws IllegalArgumentException {
-        String unitID = requestBody.get("unitID");
-        String eventID = requestBody.get("eventID");
+    public Unit modifyUnitScheduledEventList(String unitID, String eventID, Boolean isDeletion) throws IllegalArgumentException {
         if (!isValidString(unitID) || !isValidString(eventID)) {
             throw new IllegalArgumentException("Invalid request body!");
         }
@@ -115,6 +108,7 @@ public class UnitService {
             unitEvents.add(eventID);
             log.info("Added scheduled event to unit: unitID:{} eventID:{}", unitID, eventID);
         }
+        unit.setScheduledEvents(unitEvents);
         repository.save(unit);
         return unit;
     }
