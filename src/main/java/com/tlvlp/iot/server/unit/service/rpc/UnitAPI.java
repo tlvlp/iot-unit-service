@@ -1,5 +1,6 @@
 package com.tlvlp.iot.server.unit.service.rpc;
 
+import com.tlvlp.iot.server.unit.service.persistence.Message;
 import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitLog;
@@ -39,15 +40,6 @@ public class UnitAPI {
         return new ResponseEntity<>(unitService.getUnitsByExample(exampleUnit), HttpStatus.OK);
     }
 
-    @PostMapping("${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}")
-    public ResponseEntity<String> sendGlobalStatusRequest() {
-        try {
-            return outgoingMessageComposer.composeGlobalStatusRequest();
-        } catch (MessageFrowardingException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-    }
-
     @PostMapping("${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}")
     public ResponseEntity<Unit> addScheduledEventToUnit(@RequestParam String unitID,
                                                         @RequestParam String eventID) {
@@ -72,12 +64,17 @@ public class UnitAPI {
         }
     }
 
+    @PostMapping("${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}")
+    public ResponseEntity<Message> getGlobalStatusRequest() {
+        return new ResponseEntity<>(outgoingMessageComposer.composeGlobalStatusRequest(), HttpStatus.OK);
+    }
+
     @PostMapping("${UNIT_SERVICE_API_MODULE_CONTROL}")
-    public ResponseEntity<String> getModuleControlMessage(@RequestBody Module module) {
+    public ResponseEntity<Message> getModuleControlMessage(@RequestBody Module module) {
         try {
-            return outgoingMessageComposer.composeModuleControlMessage(module);
-        } catch (MessageFrowardingException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            return new ResponseEntity<>(
+                    outgoingMessageComposer.composeModuleControlMessage(module),
+                    HttpStatus.OK);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

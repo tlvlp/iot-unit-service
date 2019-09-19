@@ -5,45 +5,37 @@ import com.tlvlp.iot.server.unit.service.persistence.Message;
 import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
-import com.tlvlp.iot.server.unit.service.rpc.MessageFrowardingException;
-import com.tlvlp.iot.server.unit.service.rpc.OutgoingMessageSender;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 public class OutgoingMessageComposer {
 
     private Properties properties;
-    private OutgoingMessageSender messageForwarder;
     private UnitRepository unitRepository;
 
-    public OutgoingMessageComposer(Properties properties, OutgoingMessageSender messageForwarder,
-                                   UnitRepository unitRepository) {
+    public OutgoingMessageComposer(Properties properties, UnitRepository unitRepository) {
         this.properties = properties;
-        this.messageForwarder = messageForwarder;
         this.unitRepository = unitRepository;
     }
 
-    public ResponseEntity<String> composeGlobalStatusRequest() throws MessageFrowardingException {
-        Message message = new Message()
+    public Message composeGlobalStatusRequest() {
+        return new Message()
                 .setTopic(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS_REQUEST())
                 .setPayload(new HashMap<>());
-        return messageForwarder.sendMessage(message);
     }
 
-    public ResponseEntity<String> composeModuleControlMessage(Module module)
-            throws MessageFrowardingException, IllegalArgumentException {
+    public Message composeModuleControlMessage(Module module) throws IllegalArgumentException {
         Unit unit = getUnitIfModuleIsValid(module);
-        Map<String, String> payloadMap = new HashMap<>();
-        payloadMap.put(module.getModuleID(), module.getValue().toString());
-        Message message = new Message()
+        return new Message()
                 .setTopic(unit.getControlTopic())
-                .setPayload(payloadMap);
-        return messageForwarder.sendMessage(message);
+                .setPayload(Collections.singletonMap(
+                        module.getModuleID(),
+                        module.getValue().toString()));
+
     }
 
     private Unit getUnitIfModuleIsValid(Module module) throws IllegalArgumentException {
@@ -52,8 +44,9 @@ public class OutgoingMessageComposer {
         unitDB.orElseThrow(() -> new IllegalArgumentException(
                 String.format("Cannot send module control message: unitID is not in the database: %s", unitID)));
         Unit unit = unitDB.get();
-        boolean isModuleInUnit =
-                unit.getModules().stream().anyMatch(m -> m.getModuleID().equals(module.getModuleID()));
+        var isModuleInUnit =
+                unit.getModules().stream()
+                        .anyMatch(m -> m.getModuleID().equals(module.getModuleID()));
         if(!isModuleInUnit) {
             throw new IllegalArgumentException(
                     String.format("Cannot send module control message: " +
