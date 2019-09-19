@@ -20,8 +20,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -98,6 +97,7 @@ class UnitServiceTest {
         var modules = new HashSet<Module>();
         modules.add(new Module());
         given(moduleService.parseModulesFromPayload(anyMap(), anyString())).willReturn(modules);
+        given(repository.save(any(Unit.class))).willReturn(oldUnit);
 
         // when
         unitService.updateUnitFromMessage(oldUnit, message);
