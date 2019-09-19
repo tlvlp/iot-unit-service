@@ -28,15 +28,13 @@ public class UnitLogService {
     public UnitLog saveUnitLogInactiveFromMessage(Message message) {
         UnitLog log = getUnitLogBase(message)
                 .setLogEntry("Unit became inactive");
-        repository.save(log);
-        return log;
+        return repository.save(log);
     }
 
     public UnitLog saveUnitLogErrorFromMessage(Message message) {
         UnitLog log = getUnitLogBase(message)
-                .setLogEntry(message.getPayload().get("error"));
-        repository.save(log);
-        return log;
+                .setLogEntry(message.getPayload().get("logEntry"));
+        return repository.save(log);
     }
 
     private UnitLog getUnitLogBase(Message message) {
