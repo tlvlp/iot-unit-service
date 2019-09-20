@@ -8,15 +8,6 @@ public class Properties {
 
     // The service uses environment variables from the Docker container.
 
-    @Value("${API_GATEWAY_API_OUTGOING_MQTT_MESSAGE}")
-    private String API_GATEWAY_API_OUTGOING_MQTT_MESSAGE;
-
-    @Value("${API_GATEWAY_NAME}")
-    private String API_GATEWAY_NAME;
-
-    @Value("${API_GATEWAY_PORT}")
-    private String API_GATEWAY_PORT;
-
     @Value("${MCU_MQTT_TOPIC_GLOBAL_STATUS}")
     private String MCU_MQTT_TOPIC_GLOBAL_STATUS;
 
@@ -29,18 +20,6 @@ public class Properties {
     @Value("${MCU_MQTT_TOPIC_GLOBAL_ERROR}")
     private String MCU_MQTT_TOPIC_GLOBAL_ERROR;
 
-
-    public String getAPI_GATEWAY_API_OUTGOING_MQTT_MESSAGE() {
-        return API_GATEWAY_API_OUTGOING_MQTT_MESSAGE;
-    }
-
-    public String getAPI_GATEWAY_NAME() {
-        return API_GATEWAY_NAME;
-    }
-
-    public String getAPI_GATEWAY_PORT() {
-        return API_GATEWAY_PORT;
-    }
 
     public String getMCU_MQTT_TOPIC_GLOBAL_STATUS() {
         return MCU_MQTT_TOPIC_GLOBAL_STATUS;
