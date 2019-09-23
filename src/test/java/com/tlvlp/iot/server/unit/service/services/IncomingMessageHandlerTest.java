@@ -81,7 +81,7 @@ class IncomingMessageHandlerTest {
         assertNotNull(responseMap);
         assertEquals("error", responseMap.get(IncomingMessageHandler.RESPONSE_TYPE),
                 "The response's type field should be error");
-        assertEquals(unitLog, responseMap.get(IncomingMessageHandler.RESPONSE_RESULT),
+        assertEquals(unitLog, responseMap.get(IncomingMessageHandler.RESPONSE_OBJECT),
                 "The response's result field should contain the generated log entry");
 
     }
@@ -109,7 +109,7 @@ class IncomingMessageHandlerTest {
         assertNotNull(responseMap);
         assertEquals("inactive", responseMap.get(IncomingMessageHandler.RESPONSE_TYPE),
                 "The response's type field should be inactive");
-        assertEquals(unitLog, responseMap.get(IncomingMessageHandler.RESPONSE_RESULT),
+        assertEquals(unitLog, responseMap.get(IncomingMessageHandler.RESPONSE_OBJECT),
                 "The response's result field should contain the generated log entry");
 
     }
@@ -147,7 +147,7 @@ class IncomingMessageHandlerTest {
         assertNotNull(responseMap);
         assertEquals("status", responseMap.get(IncomingMessageHandler.RESPONSE_TYPE),
                 "The response's type field should be status");
-        assertEquals(unit, responseMap.get(IncomingMessageHandler.RESPONSE_RESULT),
+        assertEquals(unit, responseMap.get(IncomingMessageHandler.RESPONSE_OBJECT),
                 "The response's result field should contain the saved Unit");
 
     }
@@ -171,7 +171,7 @@ class IncomingMessageHandlerTest {
         assertNotNull(responseMap);
         assertEquals("status", responseMap.get(IncomingMessageHandler.RESPONSE_TYPE),
                 "The response's type field should be status");
-        assertEquals(unit, responseMap.get(IncomingMessageHandler.RESPONSE_RESULT),
+        assertEquals(unit, responseMap.get(IncomingMessageHandler.RESPONSE_OBJECT),
                 "The response's result field should contain the saved Unit");
     }
 

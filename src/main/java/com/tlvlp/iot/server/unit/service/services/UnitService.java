@@ -41,8 +41,8 @@ public class UnitService {
         return repository.findById(unitID);
     }
 
-    void saveUnit(Unit unit) {
-        repository.save(unit);
+    Unit saveUnit(Unit unit) {
+        return repository.save(unit);
     }
 
     Unit createUnitFromMessage(Message message) {
