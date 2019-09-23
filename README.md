@@ -4,9 +4,12 @@
 Part of the tlvlp IoT project's server side microservices.
 
 This Dockerized SpringBoot-based service is responsible for all Microcontroller Unit (MCU) related operations on the server side:
-- Incoming status/error/inactivity messages: Register new units or update the status of existing ones
-- Control units
-- Schedule unit control events
+- Process incoming status/error/inactivity messages: Register new units or update the status of existing ones
+- Returns unit details on demand
+- Add/remove scheduled events for units
+- Persist unit related log entries and return them on demand
+- Generate Unit/Module control messages
+- Generate global status request messages
 
 ## Building and publishing JAR + Docker image
 This project is using the using the [Palantir Docker Gradle plugin](https://github.com/palantir/gradle-docker).
@@ -20,19 +23,18 @@ and is recommended to be run with the docker/dockerTagsPush task.
 ## Server-side API
 Actual API endpoints are inherited from the project's [deployment repository](https://gitlab.com/tlvlp/iot.server.deployment) via environment variables.
 
-### POST Message (incoming messages):
 
-Handles incoming messages
+### POST Incoming messages:
+
+Processes incoming MQTT messages and handles related actions, eg. status update, inactivation or error reporing
 
 #### Related environment variables:
 - ${UNIT_SERVICE_API_INCOMING_MESSAGE}
-- ${UNIT_SERVICE_API_INCOMING_MESSAGE_URL}
 
-#### Fields:
-RequestBody (all fields are mandatory):
+#### Input:
+RequestBody:
 - **topic**: String containing the targeted MQTT topic
 - **payload**: Map<String, String> of the payload to be sent to the subscribers of the topic
-NOTE: Honoring the contents of the payload is the responsibility of the MCUs.
 
 ```
 {
@@ -45,15 +47,30 @@ NOTE: Honoring the contents of the payload is the responsibility of the MCUs.
 }
 ```
 
+#### Output:
+- **type**: String with the parsed request type (status, inactive, error)
+- **object**: Map<String, Object> differs according to type:
+    - status: updated Unit object
+    - inactive: updated Unit object
+    - error: the generated UnitLog object
+
+```
+{
+    "type": "status",
+    "object": { ... }
+}
+```
+
+
 ### GET Units by example:
 
-Returns a list of Units that match all values in the example
+Returns a list of Units that match all values in the example.
+Null values / empty fields will be ignored
 
 #### Related environment variables:
 - ${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}
-- ${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE_URI}
 
-#### Fields:
+#### Input:
 RequestBody (all the empty fields are ignored):
 - **id**: String - the unique ID of the unit
 - **name**: String - name of the unit
@@ -73,6 +90,15 @@ RequestBody (all the empty fields are ignored):
 }
 
 ```
+#### Output:
+
+A list of Units or an empty list
+
+```
+[{...}, {...}, {...}]
+```
+
+
 
 ### GET All Units:
 
@@ -80,35 +106,48 @@ Returns a list of Units that match all values in the example
 
 #### Related environment variables:
 - ${UNIT_SERVICE_API_LIST_ALL_UNIT}
-- ${UNIT_SERVICE_API_LIST_ALL_UNIT_URI}
 
-#### Fields:
+#### Input:
 Takes no arguments.
 
+#### Output:
 
-### POST Global status request to the Units:
+A list of Units or an empty list
 
-Sends a message to the global status request MQTT topic to which all Units must respond by sending their status.
+```
+[{...}, {...}, {...}]
+```
+
+
+### GET Global Unit status request message:
+
+Composes and returns a message with the global status request MQTT topic
 
 #### Related environment variables:
 - ${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}
-- ${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS_URI}
 
-#### Fields:
+#### Input:
 Takes no arguments.
 
+#### Output:
+A message object with the global status request.
+```
+{
+    "topic": "/global/statusrequesttopic",
+    "payload": {}
+}
+```
 
-### POST Module Control to Unit:
+### Get Module control message:
 
-Module specific control endpoint.
-Sends a message to a unit-specific MQTT control topic to manipulate the module in that given unit.
+Composes and returns a message to a unit-specific MQTT control topic.
+Once delivered it will execute the requested action in the module eg. switching a relay
 
 #### Related environment variables:
 - ${UNIT_SERVICE_API_RELAY_CONTROL}
-- ${UNIT_SERVICE_API_RELAY_CONTROL_URI}
 
-#### Fields:
-RequestBody (all fields are mandatory):
+#### Input:
+RequestBody:
 - **moduleID**: String - module ID
 - **value**: Double - requested value/state of the Module
 - **unitID**: String - ID of the containing Unit
@@ -121,34 +160,70 @@ RequestBody (all fields are mandatory):
 }
 
 ```
+#### Output:
+
+A message object with unit specific control topic.
+```
+{
+    "topic": "/unit_specific_topic",
+    "payload": {...}
+}
+```
 
 
-### POST Add scheduled event to Unit:
+### POST a scheduled event to Unit:
 
-Adds a scheduled event to the list of events in a given Unit
+Adds a scheduled event to a Unit's event list
 
 #### Related environment variables:
 - ${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}
-- ${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT_URL}
 
-#### Fields:
+#### Input:
 RequestParams (all fields are mandatory):
 - **unitID**: String - ID of the containing Unit
 - **eventID**: String - event ID
 
+#### Output:
+The updated unit
 
 ### DELETE Removed scheduled event from Unit:
 
-Removes a scheduled event from the list of events in a given Unit
+Removes a scheduled event from a Unit's event list
 
 #### Related environment variables:
 - ${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT}
-- ${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT_URL}
 
-#### Fields:
+#### Input:
 RequestParams (all fields are mandatory):
 - **unitID**: String - ID of the containing Unit
 - **eventID**: String - event ID
+
+#### Output:
+The updated unit
+
+
+
+### Get Unit logs:
+
+Returns the log entries for the given unit for a given time frame
+
+#### Related environment variables:
+- ${UNIT_SERVICE_API_GET_UNIT_LOGS}
+
+#### Input:
+RequestParams:
+- **unitID**: String - ID of the containing Unit
+- **timeFrom**: LocalDateTime - Lower time limit for the report (included)
+- **timeTo**: LocalDateTime - Upper time limit for the report (excluded)
+
+#### Output:
+
+A list of UnitLog entries or an empty list
+
+```
+[{...}, {...}, {...}]
+```
+
 
 
 
