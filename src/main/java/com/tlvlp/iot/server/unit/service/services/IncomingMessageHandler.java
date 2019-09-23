@@ -21,7 +21,7 @@ public class IncomingMessageHandler {
     private UnitLogService unitLogService;
 
     public static String RESPONSE_TYPE = "type";
-    public static String RESPONSE_RESULT = "result";
+    public static String RESPONSE_OBJECT = "object";
 
 
     public IncomingMessageHandler(Properties properties, UnitService unitService, UnitLogService unitLogService) {
@@ -37,13 +37,13 @@ public class IncomingMessageHandler {
             HashMap<String, Object> responseMap = new HashMap<>();
             if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_ERROR())) {
                 responseMap.put(RESPONSE_TYPE, "error");
-                responseMap.put(RESPONSE_RESULT, handleUnitError(message));
+                responseMap.put(RESPONSE_OBJECT, handleUnitError(message));
             } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_INACTIVE())) {
                 responseMap.put(RESPONSE_TYPE, "inactive");
-                responseMap.put(RESPONSE_RESULT, handleInactiveUnit(message));
+                responseMap.put(RESPONSE_OBJECT, handleInactiveUnit(message));
             } else if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS())) {
                 responseMap.put(RESPONSE_TYPE, "status");
-                responseMap.put(RESPONSE_RESULT, handleUnitStatusChange(message));
+                responseMap.put(RESPONSE_OBJECT, handleUnitStatusChange(message));
             } else {
                 throw new IllegalArgumentException(String.format("Unknown topic: %s", topic));
             }
@@ -76,15 +76,16 @@ public class IncomingMessageHandler {
         return unitLog;
     }
 
-    private UnitLog handleInactiveUnit(Message message) throws IllegalArgumentException {
+    private Unit handleInactiveUnit(Message message) throws IllegalArgumentException {
         Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
         if (unitDB.isPresent()) {
             Unit unit = unitDB.get();
             unit.setActive(false);
-            unitService.saveUnit(unit);
+            var savedUnit = unitService.saveUnit(unit);
+            unitLogService.saveUnitLogInactiveFromMessage(message);
             log.info("Unit is inactive: UnitID:{} Project:{} Name:{}",
                     unit.getUnitID(), unit.getProject(), unit.getName());
-            return unitLogService.saveUnitLogInactiveFromMessage(message);
+            return savedUnit;
         } else {
             throw new IllegalArgumentException("Unit doesn't exist so cannot be set to inactive status");
         }

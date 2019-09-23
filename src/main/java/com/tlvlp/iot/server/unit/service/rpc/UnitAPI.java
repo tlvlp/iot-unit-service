@@ -4,6 +4,7 @@ import com.tlvlp.iot.server.unit.service.persistence.Message;
 import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitLog;
+import com.tlvlp.iot.server.unit.service.services.IncomingMessageHandler;
 import com.tlvlp.iot.server.unit.service.services.OutgoingMessageComposer;
 import com.tlvlp.iot.server.unit.service.services.UnitLogService;
 import com.tlvlp.iot.server.unit.service.services.UnitService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -22,12 +24,13 @@ public class UnitAPI {
     private UnitService unitService;
     private UnitLogService unitLogService;
     private OutgoingMessageComposer outgoingMessageComposer;
+    private IncomingMessageHandler incomingMessageHandler;
 
-    public UnitAPI(UnitService unitService, UnitLogService unitLogService,
-                   OutgoingMessageComposer outgoingMessageComposer) {
+    public UnitAPI(UnitService unitService, UnitLogService unitLogService, OutgoingMessageComposer outgoingMessageComposer, IncomingMessageHandler incomingMessageHandler) {
         this.unitService = unitService;
         this.unitLogService = unitLogService;
         this.outgoingMessageComposer = outgoingMessageComposer;
+        this.incomingMessageHandler = incomingMessageHandler;
     }
 
     @GetMapping("${UNIT_SERVICE_API_LIST_ALL_UNIT}")
@@ -38,6 +41,17 @@ public class UnitAPI {
     @GetMapping("${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}")
     public ResponseEntity<List<Unit>> getUnitsByExample(@RequestBody Unit exampleUnit) {
         return new ResponseEntity<>(unitService.getUnitsByExample(exampleUnit), HttpStatus.OK);
+    }
+
+    @PostMapping("${UNIT_SERVICE_API_INCOMING_MESSAGE}")
+    public ResponseEntity<HashMap<String, Object>> handleIncomingMessage(@RequestBody Message message) {
+        try {
+            return new ResponseEntity<>(
+                    incomingMessageHandler.handleIncomingMessage(message),
+                    HttpStatus.ACCEPTED);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @PostMapping("${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}")
