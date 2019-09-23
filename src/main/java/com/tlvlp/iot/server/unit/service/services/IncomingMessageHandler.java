@@ -96,7 +96,9 @@ public class IncomingMessageHandler {
         if (unitDB.isPresent()) {
             return unitService.updateUnitFromMessage(unitDB.get(), message);
         } else {
-            return unitService.createUnitFromMessage(message);
+            Unit newUnit = unitService.createUnitFromMessage(message);
+            unitLogService.saveUnitFirstCreationFromMessage(message);
+            return newUnit;
         }
     }
 
