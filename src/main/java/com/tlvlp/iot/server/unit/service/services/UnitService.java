@@ -54,7 +54,8 @@ public class UnitService {
                 .setControlTopic(getUnitControlTopic(unitID))
                 .setActive(true)
                 .setLastSeen(LocalDateTime.now())
-                .setModules(moduleService.parseModulesFromPayload(message.getPayload(), unitID));
+                .setModules(moduleService.parseModulesFromPayload(message.getPayload(), unitID))
+                .setScheduledEvents(new HashSet<>());
         var unitSaved = repository.save(newUnit);
         log.info("Added new unit: {}", unitSaved);
         return unitSaved;
