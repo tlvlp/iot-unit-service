@@ -25,10 +25,16 @@ public class UnitLogService {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public UnitLog saveUnitLogInactiveFromMessage(Message message) {
+    public void saveUnitFirstCreationFromMessage(Message message) {
+        UnitLog log = getUnitLogBase(message)
+                .setLogEntry("Unit seen for the first time");
+        repository.save(log);
+    }
+
+    public void saveUnitLogInactiveFromMessage(Message message) {
         UnitLog log = getUnitLogBase(message)
                 .setLogEntry("Unit became inactive");
-        return repository.save(log);
+        repository.save(log);
     }
 
     public UnitLog saveUnitLogErrorFromMessage(Message message) {

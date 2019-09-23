@@ -33,16 +33,6 @@ public class UnitAPI {
         this.incomingMessageHandler = incomingMessageHandler;
     }
 
-    @GetMapping("${UNIT_SERVICE_API_LIST_ALL_UNIT}")
-    public ResponseEntity<List<Unit>> getAllUnits() {
-        return new ResponseEntity<>(unitService.getAllUnits(), HttpStatus.OK);
-    }
-
-    @GetMapping("${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}")
-    public ResponseEntity<List<Unit>> getUnitsByExample(@RequestBody Unit exampleUnit) {
-        return new ResponseEntity<>(unitService.getUnitsByExample(exampleUnit), HttpStatus.OK);
-    }
-
     @PostMapping("${UNIT_SERVICE_API_INCOMING_MESSAGE}")
     public ResponseEntity<HashMap<String, Object>> handleIncomingMessage(@RequestBody Message message) {
         try {
@@ -52,6 +42,16 @@ public class UnitAPI {
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @GetMapping("${UNIT_SERVICE_API_LIST_ALL_UNIT}")
+    public ResponseEntity<List<Unit>> getAllUnits() {
+        return new ResponseEntity<>(unitService.getAllUnits(), HttpStatus.OK);
+    }
+
+    @GetMapping("${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}")
+    public ResponseEntity<List<Unit>> getUnitsByExample(@RequestBody Unit exampleUnit) {
+        return new ResponseEntity<>(unitService.getUnitsByExample(exampleUnit), HttpStatus.OK);
     }
 
     @PostMapping("${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}")
@@ -78,12 +78,12 @@ public class UnitAPI {
         }
     }
 
-    @PostMapping("${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}")
+    @GetMapping("${UNIT_SERVICE_API_REQUEST_GLOBAL_STATUS}")
     public ResponseEntity<Message> getGlobalStatusRequest() {
         return new ResponseEntity<>(outgoingMessageComposer.composeGlobalStatusRequest(), HttpStatus.OK);
     }
 
-    @PostMapping("${UNIT_SERVICE_API_MODULE_CONTROL}")
+    @GetMapping("${UNIT_SERVICE_API_MODULE_CONTROL}")
     public ResponseEntity<Message> getModuleControlMessage(@RequestBody Module module) {
         try {
             return new ResponseEntity<>(
