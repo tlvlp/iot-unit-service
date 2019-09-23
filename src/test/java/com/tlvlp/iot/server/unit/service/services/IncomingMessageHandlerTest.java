@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -93,6 +95,7 @@ class IncomingMessageHandlerTest {
         given(properties.getMCU_MQTT_TOPIC_GLOBAL_INACTIVE()).willReturn(testedTopic);
         given(unitService.getUnitByID(anyString())).willReturn(Optional.of(unit));
         given(unitLogService.saveUnitLogInactiveFromMessage(any(Message.class))).willReturn(unitLog);
+        given(unitService.saveUnit(any(Unit.class))).willReturn(new Unit());
 
         // when
         var responseMap = incomingMessageHandler.handleIncomingMessage(incomingMessage);
@@ -109,8 +112,7 @@ class IncomingMessageHandlerTest {
         assertNotNull(responseMap);
         assertEquals("inactive", responseMap.get(IncomingMessageHandler.RESPONSE_TYPE),
                 "The response's type field should be inactive");
-        assertEquals(unitLog, responseMap.get(IncomingMessageHandler.RESPONSE_OBJECT),
-                "The response's result field should contain the generated log entry");
+        assertThat(responseMap.get(IncomingMessageHandler.RESPONSE_OBJECT), instanceOf(Unit.class));
 
     }
 
