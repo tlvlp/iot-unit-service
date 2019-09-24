@@ -6,8 +6,6 @@ import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -31,10 +29,6 @@ public class UnitService {
 
     public List<Unit> getAllUnits() {
         return repository.findAll();
-    }
-
-    public List<Unit> getUnitsByExample(Unit exampleUnit) {
-        return repository.findAll(Example.of(exampleUnit, ExampleMatcher.matching().withIgnoreNullValues()));
     }
 
     public Optional<Unit> getUnitByID(String unitID) {

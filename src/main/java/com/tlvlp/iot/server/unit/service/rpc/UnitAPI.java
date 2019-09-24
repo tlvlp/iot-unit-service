@@ -49,9 +49,11 @@ public class UnitAPI {
         return new ResponseEntity<>(unitService.getAllUnits(), HttpStatus.OK);
     }
 
-    @GetMapping("${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}")
-    public ResponseEntity<List<Unit>> getUnitsByExample(@RequestBody Unit exampleUnit) {
-        return new ResponseEntity<>(unitService.getUnitsByExample(exampleUnit), HttpStatus.OK);
+    @GetMapping("${UNIT_SERVICE_API_GET_UNIT_BY_ID}")
+    public ResponseEntity<Unit> getUnitByID(@RequestParam String unitID) {
+        var unitOptional = unitService.getUnitByID(unitID);
+        return unitOptional.map(unit -> new ResponseEntity<>(unit, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}")
