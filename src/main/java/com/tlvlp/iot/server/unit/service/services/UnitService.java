@@ -9,10 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -86,7 +83,10 @@ public class UnitService {
         }
     }
 
-    public Unit modifyUnitScheduledEventList(String unitID, String eventID, Boolean isDeletion) throws IllegalArgumentException {
+    public Unit modifyUnitScheduledEventList(Map<String, String> requestDetails, Boolean isDeletion)
+            throws IllegalArgumentException {
+        var unitID = requestDetails.get("unitID");
+        var eventID = requestDetails.get("eventID");
         if (!isValidString(unitID) || !isValidString(eventID)) {
             throw new IllegalArgumentException("Invalid request body!");
         }

@@ -158,14 +158,21 @@ Adds a scheduled event to a Unit's event list
 - ${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}
 
 #### Input:
-RequestParams (all fields are mandatory):
+RequestBody:
 - **unitID**: String - ID of the containing Unit
 - **eventID**: String - event ID
+```
+{
+    "unitID": "tlvlp.iot.BazsalikON-soil"
+    "eventID": "event_id",
+}
+
+```
 
 #### Output:
 The updated unit
 
-### DELETE Removed scheduled event from Unit:
+### POST Removed scheduled event from Unit:
 
 Removes a scheduled event from a Unit's event list
 
@@ -173,9 +180,17 @@ Removes a scheduled event from a Unit's event list
 - ${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT}
 
 #### Input:
-RequestParams (all fields are mandatory):
+RequestBody:
 - **unitID**: String - ID of the containing Unit
 - **eventID**: String - event ID
+```
+{
+    "unitID": "tlvlp.iot.BazsalikON-soil"
+    "eventID": "event_id",
+}
+
+```
+
 
 #### Output:
 The updated unit

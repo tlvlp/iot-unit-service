@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Unit service tests")
+@DisplayName("Unit service Scheduled Event tests")
 class UnitServiceScheduledEventsTest {
 
     @Mock
@@ -54,11 +55,12 @@ class UnitServiceScheduledEventsTest {
     @DisplayName("Add scheduled event to Unit")
     void modifyUnitScheduledEventListTestAdd() {
         // given
-        String newEventID = "event3";
+        var newEventID = "event3";
+        var requestDetails = Map.of("unitID", oldUnit.getUnitID(), "eventID", newEventID);
         given(repository.findById(anyString())).willReturn(Optional.of(oldUnit));
 
         // when
-        unitService.modifyUnitScheduledEventList(oldUnit.getUnitID(), newEventID, false);
+        unitService.modifyUnitScheduledEventList(requestDetails, false);
 
         // then
         then(repository).should().findById(oldUnit.getUnitID());
@@ -75,11 +77,12 @@ class UnitServiceScheduledEventsTest {
     @DisplayName("Remove scheduled event from Unit")
     void modifyUnitScheduledEventListTestDelete() {
         // given
-        String eventIDToRemove = "event2";
+        var eventIDToRemove = "event2";
+        var requestDetails = Map.of("unitID", oldUnit.getUnitID(), "eventID", eventIDToRemove);
         given(repository.findById(anyString())).willReturn(Optional.of(oldUnit));
 
         // when
-        unitService.modifyUnitScheduledEventList(oldUnit.getUnitID(), eventIDToRemove, true);
+        unitService.modifyUnitScheduledEventList(requestDetails, true);
 
         // then
         then(repository).should().findById(oldUnit.getUnitID());
@@ -97,12 +100,13 @@ class UnitServiceScheduledEventsTest {
     @DisplayName("Modify scheduled event and get error when the unitID is not in the database")
     void modifyUnitScheduledEventListTestError() {
         // given
+        var requestDetails = Map.of("unitID", "unitID", "eventID", "eventID");
         given(repository.findById(anyString())).willReturn(Optional.empty());
 
         // when / then
         assertThrows(
                 IllegalArgumentException.class,
-                () -> unitService.modifyUnitScheduledEventList("unitID", "eventID", false),
+                () -> unitService.modifyUnitScheduledEventList(requestDetails, false),
                 "Throw error if the Unit is not in the database"
         );
 
