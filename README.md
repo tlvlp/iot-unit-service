@@ -62,41 +62,20 @@ RequestBody:
 ```
 
 
-### GET Units by example:
+### GET Unit by ID:
 
-Returns a list of Units that match all values in the example.
-Null values / empty fields will be ignored
+Returns a Unit that matches the given ID.
 
 #### Related environment variables:
-- ${UNIT_SERVICE_API_LIST_UNITS_BY_EXAMPLE}
+- ${UNIT_SERVICE_API_GET_UNIT_BY_ID}
 
 #### Input:
-RequestBody (all the empty fields are ignored):
-- **id**: String - the unique ID of the unit
-- **name**: String - name of the unit
-- **project**: String - related project name 
-- **active**: Boolean - becomes false if the broker sends the unit's last will message after a pre-set period of inactivity
-- **controlTopic**: String - unit-specific topic where the MCU listens for control messages
-- **lastSeen**: LocalDateTime - the date and time of the last message received from the unit
+RequestParam:
+- **unitID**: String - the unique ID of the unit
 
-```
-{
-    "id": "tlvlp.iot.BazsalikON-soil",
-    "name": "soil",
-    "project": "tlvlp.iot.BazsalikON",
-    "active": true,
-    "controlTopic": "/units/tlvlp.iot.BazsalikON-soil/control",
-    "lastSeen": "2019-08-25T11:27:14.852"
-}
-
-```
 #### Output:
+A Unit object or 404 Not found
 
-A list of Units or an empty list
-
-```
-[{...}, {...}, {...}]
-```
 
 
 
