@@ -85,7 +85,7 @@ public class UnitAPI {
         return new ResponseEntity<>(outgoingMessageComposer.composeGlobalStatusRequest(), HttpStatus.OK);
     }
 
-    @GetMapping("${UNIT_SERVICE_API_MODULE_CONTROL}")
+    @PostMapping("${UNIT_SERVICE_API_MODULE_CONTROL}")
     public ResponseEntity<Message> getModuleControlMessage(@RequestBody Module module) {
         try {
             return new ResponseEntity<>(

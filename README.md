@@ -117,13 +117,13 @@ A message object with the global status request.
 }
 ```
 
-### Get Module control message:
+### POST Module control message:
 
 Composes and returns a message to a unit-specific MQTT control topic.
 Once delivered it will execute the requested action in the module eg. switching a relay
 
 #### Related environment variables:
-- ${UNIT_SERVICE_API_RELAY_CONTROL}
+- ${UNIT_SERVICE_API_MODULE_CONTROL}
 
 #### Input:
 RequestBody:
