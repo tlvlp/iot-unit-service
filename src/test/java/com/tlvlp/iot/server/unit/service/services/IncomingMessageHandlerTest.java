@@ -94,7 +94,6 @@ class IncomingMessageHandlerTest {
         // given
         given(properties.getMCU_MQTT_TOPIC_GLOBAL_INACTIVE()).willReturn(testedTopic);
         given(unitService.getUnitByID(anyString())).willReturn(Optional.of(unit));
-        given(unitLogService.saveUnitLogInactiveFromMessage(any(Message.class))).willReturn(unitLog);
         given(unitService.saveUnit(any(Unit.class))).willReturn(new Unit());
 
         // when
