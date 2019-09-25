@@ -14,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +38,7 @@ public class UnitAPI {
     }
 
     @PostMapping("${UNIT_SERVICE_API_INCOMING_MESSAGE}")
-    public ResponseEntity<HashMap<String, Object>> handleIncomingMessage(@RequestBody Message message) {
+    public ResponseEntity<HashMap<String, Object>> handleIncomingMessage(@RequestBody @Valid Message message) {
         try {
             return new ResponseEntity<>(
                     incomingMessageHandler.handleIncomingMessage(message),
@@ -51,14 +54,14 @@ public class UnitAPI {
     }
 
     @GetMapping("${UNIT_SERVICE_API_GET_UNIT_BY_ID}")
-    public ResponseEntity<Unit> getUnitByID(@RequestParam String unitID) {
+    public ResponseEntity<Unit> getUnitByID(@RequestParam @NotBlank String unitID) {
         var unitOptional = unitService.getUnitByID(unitID);
         return unitOptional.map(unit -> new ResponseEntity<>(unit, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("${UNIT_SERVICE_API_ADD_SCHEDULED_EVENT}")
-    public ResponseEntity<Unit> addScheduledEventToUnit(@RequestBody Map<String, String> requestDetails) {
+    public ResponseEntity<Unit> addScheduledEventToUnit(@RequestBody @NotEmpty Map<String, String> requestDetails) {
         try {
             return new ResponseEntity<>(
                     unitService.modifyUnitScheduledEventList(requestDetails, false),
@@ -69,7 +72,7 @@ public class UnitAPI {
     }
 
     @PostMapping("${UNIT_SERVICE_API_DELETE_SCHEDULED_EVENT}")
-    public ResponseEntity<Unit> deleteScheduledEventFromUnit(@RequestBody Map<String, String> requestDetails) {
+    public ResponseEntity<Unit> deleteScheduledEventFromUnit(@RequestBody @NotEmpty Map<String, String> requestDetails) {
         try {
             return new ResponseEntity<>(
                     unitService.modifyUnitScheduledEventList(requestDetails, true),
@@ -85,7 +88,7 @@ public class UnitAPI {
     }
 
     @PostMapping("${UNIT_SERVICE_API_MODULE_CONTROL}")
-    public ResponseEntity<Message> getModuleControlMessage(@RequestBody Module module) {
+    public ResponseEntity<Message> getModuleControlMessage(@RequestBody @Valid Module module) {
         try {
             return new ResponseEntity<>(
                     outgoingMessageComposer.composeModuleControlMessage(module),
@@ -96,7 +99,7 @@ public class UnitAPI {
     }
 
     @GetMapping("${UNIT_SERVICE_API_GET_UNIT_LOGS}")
-    public ResponseEntity<List<UnitLog>> getUnitLogs(@RequestParam String unitID,
+    public ResponseEntity<List<UnitLog>> getUnitLogs(@RequestParam @NotBlank String unitID,
                                                      @RequestParam
                                                      @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timeFrom,
                                                      @RequestParam

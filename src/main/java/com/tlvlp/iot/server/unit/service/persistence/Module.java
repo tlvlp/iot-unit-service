@@ -1,11 +1,16 @@
 package com.tlvlp.iot.server.unit.service.persistence;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class Module {
 
+    @NotBlank
     private String unitID;
+    @NotBlank
     private String moduleID;
+    @NotNull
     private Double value;
 
     @Override

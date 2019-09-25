@@ -3,6 +3,9 @@ package com.tlvlp.iot.server.unit.service.persistence;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
@@ -15,12 +18,19 @@ public class Unit {
 
     @Id
     private String unitID;
+    @NotBlank
     private String name;
+    @NotBlank
     private String project;
+    @NotNull
     private Boolean active;
+    @NotBlank
     private String controlTopic;
+    @PastOrPresent
     private LocalDateTime lastSeen;
+    @NotNull
     private Set<Module> modules;
+    @NotNull
     private Set<String> scheduledEvents;
 
     public Unit() {

@@ -1,10 +1,14 @@
 package com.tlvlp.iot.server.unit.service.persistence;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 public class Message {
 
+    @NotBlank
     private String topic;
+    @NotNull
     private Map<String, String> payload;
 
     @Override

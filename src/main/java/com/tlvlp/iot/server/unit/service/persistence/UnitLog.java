@@ -3,6 +3,8 @@ package com.tlvlp.iot.server.unit.service.persistence;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -11,10 +13,15 @@ public class UnitLog {
 
     @Id
     private String logID;
+    @NotBlank
     private String unitID;
+    @NotBlank
     private String name;
+    @NotBlank
     private String project;
+    @PastOrPresent
     private LocalDateTime arrived;
+    @NotBlank
     private String logEntry;
 
     @Override

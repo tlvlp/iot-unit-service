@@ -94,7 +94,7 @@ public class UnitService {
         unitDB.orElseThrow(() ->
                 new IllegalArgumentException(String.format(
                         "Scheduled event cannot be removed! Unit does not exist: %s", unitID)));
-        Unit unit = unitDB.get();
+        var unit = unitDB.get();
         Set<String> unitEvents = unit.getScheduledEvents();
         if (isDeletion) {
             unitEvents.remove(eventID);
