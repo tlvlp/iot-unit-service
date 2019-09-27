@@ -74,7 +74,7 @@ class OutgoingMessageComposerTest {
 
     @Test
     @DisplayName("Compose module control message with valid details")
-    void composeModuleControlMessageWithValidDetails() {
+    void composeModuleControlMessageWithValidDetails() throws MessageProcessingException {
         // given
         given(unitRepository.findById(unitID)).willReturn(Optional.of(unit));
 
@@ -97,7 +97,7 @@ class OutgoingMessageComposerTest {
 
         // when / then
         assertThrows(
-                IllegalArgumentException.class,
+                MessageProcessingException.class,
                 () -> outgoingMessageComposer.composeModuleControlMessage(module),
                 "Throw exception if the Unit of the Module is not in the database");
 
@@ -112,7 +112,7 @@ class OutgoingMessageComposerTest {
 
         // when / then
         assertThrows(
-                IllegalArgumentException.class,
+                MessageProcessingException.class,
                 () -> outgoingMessageComposer.composeModuleControlMessage(module),
                 "Throw exception if the Module is not in the retrieved Unit's module list");
     }

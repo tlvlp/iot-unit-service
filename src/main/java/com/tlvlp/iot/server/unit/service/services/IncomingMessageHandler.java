@@ -7,7 +7,6 @@ import com.tlvlp.iot.server.unit.service.persistence.UnitLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Optional;
@@ -30,10 +29,10 @@ public class IncomingMessageHandler {
         this.unitLogService = unitLogService;
     }
 
-    public HashMap<String, Object> handleIncomingMessage(Message message) throws ResponseStatusException {
+    public HashMap<String, Object> handleIncomingMessage(Message message) throws MessageProcessingException {
         try {
-            checkMessageValidity(message);
-            String topic = message.getTopic();
+            checkPayloadValidity(message);
+            var topic = message.getTopic();
             HashMap<String, Object> responseMap = new HashMap<>();
             if (topic.equals(properties.getMCU_MQTT_TOPIC_GLOBAL_ERROR())) {
                 responseMap.put(RESPONSE_TYPE, "error");
@@ -45,38 +44,37 @@ public class IncomingMessageHandler {
                 responseMap.put(RESPONSE_TYPE, "status");
                 responseMap.put(RESPONSE_OBJECT, handleUnitStatusChange(message));
             } else {
-                throw new IllegalArgumentException(String.format("Unknown topic: %s", topic));
+                throw new MessageProcessingException(String.format("Unknown topic: %s", topic));
             }
             return responseMap;
-        } catch (IllegalArgumentException e) {
+        } catch (MessageProcessingException | UnitProcessingException e) {
             var err = String.format("Error processing message! %s", e.getMessage());
             log.error(err);
-            throw new IllegalArgumentException(err);
+            throw new MessageProcessingException(err);
         }
     }
 
-    private void checkMessageValidity(Message message) throws IllegalArgumentException {
+    //
+    private void checkPayloadValidity(Message message) throws MessageProcessingException {
         if (message.getPayload().get("unitID") == null) {
-            throw new IllegalArgumentException("Missing UnitID");
-        } else if (message.getTopic() == null) {
-            throw new IllegalArgumentException("Missing topic");
+            throw new MessageProcessingException("Missing UnitID");
         } else if (message.getPayload().get("name") == null) {
-            throw new IllegalArgumentException("Missing name in payload");
+            throw new MessageProcessingException("Missing name in payload");
         } else if (message.getPayload().get("project") == null) {
-            throw new IllegalArgumentException("Missing project in payload");
+            throw new MessageProcessingException("Missing project in payload");
         }
     }
 
-    private UnitLog handleUnitError(Message message) throws IllegalArgumentException {
+    private UnitLog handleUnitError(Message message) throws MessageProcessingException {
         if (message.getPayload().get("error") == null) {
-            throw new IllegalArgumentException("Missing error message in unit error payload");
+            throw new MessageProcessingException("Missing error message in unit error payload");
         }
         UnitLog unitLog = unitLogService.saveUnitLogErrorFromMessage(message);
         log.info("Unit error message: {}", unitLog);
         return unitLog;
     }
 
-    private Unit handleInactiveUnit(Message message) throws IllegalArgumentException {
+    private Unit handleInactiveUnit(Message message) throws UnitProcessingException {
         Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
         if (unitDB.isPresent()) {
             Unit unit = unitDB.get();
@@ -87,11 +85,11 @@ public class IncomingMessageHandler {
                     unit.getUnitID(), unit.getProject(), unit.getName());
             return savedUnit;
         } else {
-            throw new IllegalArgumentException("Unit doesn't exist so cannot be set to inactive status");
+            throw new UnitProcessingException("Unit doesn't exist so cannot be set to inactive status");
         }
     }
 
-    private Unit handleUnitStatusChange(Message message) {
+    private Unit handleUnitStatusChange(Message message) throws MessageProcessingException {
         Optional<Unit> unitDB = unitService.getUnitByID(message.getPayload().get("unitID"));
         if (unitDB.isPresent()) {
             return unitService.updateUnitFromMessage(unitDB.get(), message);

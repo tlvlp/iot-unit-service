@@ -36,7 +36,7 @@ public class UnitService {
         return repository.save(unit);
     }
 
-    Unit createUnitFromMessage(Message message) {
+    Unit createUnitFromMessage(Message message) throws MessageProcessingException {
         String unitID = message.getPayload().get("unitID");
         Unit newUnit = new Unit()
                 .setUnitID(unitID)
@@ -56,7 +56,7 @@ public class UnitService {
         return String.format("/units/%s/control", unitID);
     }
 
-    Unit updateUnitFromMessage(Unit unitUpdate, Message message) {
+    Unit updateUnitFromMessage(Unit unitUpdate, Message message) throws MessageProcessingException {
         Set<Module> originalModules = unitUpdate.getModules();
         unitUpdate
                 .setProject(message.getPayload().get("project"))
@@ -83,16 +83,15 @@ public class UnitService {
         }
     }
 
-    public Unit modifyUnitScheduledEventList(Map<String, String> requestDetails, Boolean isDeletion)
-            throws IllegalArgumentException {
+    public Unit modifyUnitScheduledEventList(Map<String, String> requestDetails, Boolean isDeletion) throws UnitProcessingException {
         var unitID = requestDetails.get("unitID");
         var eventID = requestDetails.get("eventID");
         if (!isValidString(unitID) || !isValidString(eventID)) {
-            throw new IllegalArgumentException("Invalid request body!");
+            throw new UnitProcessingException("Invalid request body!");
         }
         Optional<Unit> unitDB = repository.findById(unitID);
         unitDB.orElseThrow(() ->
-                new IllegalArgumentException(String.format(
+                new UnitProcessingException(String.format(
                         "Scheduled event cannot be removed! Unit does not exist: %s", unitID)));
         var unit = unitDB.get();
         Set<String> unitEvents = unit.getScheduledEvents();

@@ -33,7 +33,7 @@ class ModuleServiceTest {
 
     @Test
     @DisplayName("Parse modules from payload with correct values")
-    void parseModulesFromPayloadTest() {
+    void parseModulesFromPayloadTest() throws MessageProcessingException {
         // given
         payload.put("module1|module1_name", "22.0");
         payload.put("module2|module2_name", "11");
@@ -75,7 +75,7 @@ class ModuleServiceTest {
         payload.put("module1|module1_name", "not_double");
 
         // when - then
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(MessageProcessingException.class,
                 () -> moduleService.parseModulesFromPayload(payload, unitID));
     }
 

@@ -53,7 +53,7 @@ class UnitServiceScheduledEventsTest {
 
     @Test
     @DisplayName("Add scheduled event to Unit")
-    void modifyUnitScheduledEventListTestAdd() {
+    void modifyUnitScheduledEventListTestAdd() throws UnitProcessingException {
         // given
         var newEventID = "event3";
         var requestDetails = Map.of("unitID", oldUnit.getUnitID(), "eventID", newEventID);
@@ -75,7 +75,7 @@ class UnitServiceScheduledEventsTest {
 
     @Test
     @DisplayName("Remove scheduled event from Unit")
-    void modifyUnitScheduledEventListTestDelete() {
+    void modifyUnitScheduledEventListTestDelete() throws UnitProcessingException {
         // given
         var eventIDToRemove = "event2";
         var requestDetails = Map.of("unitID", oldUnit.getUnitID(), "eventID", eventIDToRemove);
@@ -105,7 +105,7 @@ class UnitServiceScheduledEventsTest {
 
         // when / then
         assertThrows(
-                IllegalArgumentException.class,
+                UnitProcessingException.class,
                 () -> unitService.modifyUnitScheduledEventList(requestDetails, false),
                 "Throw error if the Unit is not in the database"
         );

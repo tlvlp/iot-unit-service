@@ -11,8 +11,7 @@ import java.util.Set;
 @Service
 class ModuleService {
 
-    Set<Module> parseModulesFromPayload(Map<String, String> payload, String unitID)
-            throws IllegalArgumentException {
+    Set<Module> parseModulesFromPayload(Map<String, String> payload, String unitID) throws MessageProcessingException {
         Set<Module> modules = new HashSet<>();
         Map<String, String> payloadFiltered = filterModules(payload);
         try {
@@ -23,7 +22,7 @@ class ModuleService {
                         .setUnitID(unitID));
             }
         } catch (NumberFormatException | NullPointerException e) {
-            throw new IllegalArgumentException("Unable to parse module value.", e);
+            throw new MessageProcessingException(String.format("Unable to parse module value. %s", e));
         }
 
         return modules;

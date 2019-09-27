@@ -4,10 +4,7 @@ import com.tlvlp.iot.server.unit.service.persistence.Message;
 import com.tlvlp.iot.server.unit.service.persistence.Module;
 import com.tlvlp.iot.server.unit.service.persistence.Unit;
 import com.tlvlp.iot.server.unit.service.persistence.UnitLog;
-import com.tlvlp.iot.server.unit.service.services.IncomingMessageHandler;
-import com.tlvlp.iot.server.unit.service.services.OutgoingMessageComposer;
-import com.tlvlp.iot.server.unit.service.services.UnitLogService;
-import com.tlvlp.iot.server.unit.service.services.UnitService;
+import com.tlvlp.iot.server.unit.service.services.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +40,7 @@ public class UnitAPI {
             return new ResponseEntity<>(
                     incomingMessageHandler.handleIncomingMessage(message),
                     HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
+        } catch (MessageProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -66,7 +63,7 @@ public class UnitAPI {
             return new ResponseEntity<>(
                     unitService.modifyUnitScheduledEventList(requestDetails, false),
                     HttpStatus.ACCEPTED);
-        } catch (IllegalArgumentException e) {
+        } catch (UnitProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -77,7 +74,7 @@ public class UnitAPI {
             return new ResponseEntity<>(
                     unitService.modifyUnitScheduledEventList(requestDetails, true),
                     HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        } catch (UnitProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -93,7 +90,7 @@ public class UnitAPI {
             return new ResponseEntity<>(
                     outgoingMessageComposer.composeModuleControlMessage(module),
                     HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        } catch (MessageProcessingException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }

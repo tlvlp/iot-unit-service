@@ -73,7 +73,7 @@ class UnitServiceTest {
 
     @Test
     @DisplayName("Create Unit from Message")
-    void createUnitFromMessageTest() {
+    void createUnitFromMessageTest() throws MessageProcessingException {
         // given
         given(moduleService.parseModulesFromPayload(anyMap(), anyString())).willReturn(Collections.emptySet());
 
@@ -92,7 +92,7 @@ class UnitServiceTest {
 
     @Test
     @DisplayName("Update Unit from Message")
-    void updateUnitFromMessageTest() {
+    void updateUnitFromMessageTest() throws MessageProcessingException {
         // given
         var modules = new HashSet<Module>();
         modules.add(new Module());

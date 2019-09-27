@@ -28,7 +28,7 @@ public class OutgoingMessageComposer {
                 .setPayload(new HashMap<>());
     }
 
-    public Message composeModuleControlMessage(Module module) throws IllegalArgumentException {
+    public Message composeModuleControlMessage(Module module) throws MessageProcessingException {
         Unit unit = getUnitIfModuleIsValid(module);
         return new Message()
                 .setTopic(unit.getControlTopic())
@@ -38,17 +38,17 @@ public class OutgoingMessageComposer {
 
     }
 
-    private Unit getUnitIfModuleIsValid(Module module) throws IllegalArgumentException {
+    private Unit getUnitIfModuleIsValid(Module module) throws MessageProcessingException {
         String unitID = module.getUnitID();
         Optional<Unit> unitDB = unitRepository.findById(unitID);
-        unitDB.orElseThrow(() -> new IllegalArgumentException(
+        unitDB.orElseThrow(() -> new MessageProcessingException(
                 String.format("Cannot send module control message: unitID is not in the database: %s", unitID)));
         Unit unit = unitDB.get();
         var isModuleInUnit =
                 unit.getModules().stream()
                         .anyMatch(m -> m.getModuleID().equals(module.getModuleID()));
         if(!isModuleInUnit) {
-            throw new IllegalArgumentException(
+            throw new MessageProcessingException(
                     String.format("Cannot send module control message: " +
                                     "module is not present in unit: moduleID:%s unitID:%s",
                             module.getModuleID(), unitID));

@@ -68,7 +68,7 @@ class IncomingMessageHandlerTest {
 
     @Test
     @DisplayName("Handle incoming error message from Unit")
-    void handleIncomingMessageErrorTopic() {
+    void handleIncomingMessageErrorTopic() throws MessageProcessingException {
         // given
         payloadMap.put("error", "error");
         incomingMessage.setPayload(payloadMap);
@@ -90,7 +90,7 @@ class IncomingMessageHandlerTest {
 
     @Test
     @DisplayName("Handle incoming inactive message from Unit")
-    void handleIncomingMessageInactiveTopic() {
+    void handleIncomingMessageInactiveTopic() throws MessageProcessingException {
         // given
         given(properties.getMCU_MQTT_TOPIC_GLOBAL_INACTIVE()).willReturn(testedTopic);
         given(unitService.getUnitByID(anyString())).willReturn(Optional.of(unit));
@@ -124,14 +124,14 @@ class IncomingMessageHandlerTest {
 
         // when / then
         assertThrows(
-                IllegalArgumentException.class,
+                MessageProcessingException.class,
                 () -> incomingMessageHandler.handleIncomingMessage(incomingMessage),
                 "Throw error if unit is not found in the database");
     }
 
     @Test
     @DisplayName("Handle incoming status change from a new Unit")
-    void handleIncomingMessageStatusTopicNewUnit() {
+    void handleIncomingMessageStatusTopicNewUnit() throws MessageProcessingException {
         // given
         given(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS()).willReturn(testedTopic);
         given(unitService.getUnitByID(anyString())).willReturn(Optional.empty());
@@ -155,7 +155,7 @@ class IncomingMessageHandlerTest {
 
     @Test
     @DisplayName("Handle incoming status change from an existing Unit")
-    void handleIncomingMessageStatusTopicUpdateUnit() {
+    void handleIncomingMessageStatusTopicUpdateUnit() throws MessageProcessingException {
         // given
         given(properties.getMCU_MQTT_TOPIC_GLOBAL_STATUS()).willReturn(testedTopic);
         given(unitService.getUnitByID(anyString())).willReturn(Optional.of(unit));
@@ -177,19 +177,6 @@ class IncomingMessageHandlerTest {
     }
 
     @Test
-    @DisplayName("Handle incoming message with invalid topic")
-    void handleIncomingMessageWithInvalidTopic() {
-        // given
-        incomingMessage.setTopic(null);
-
-        // when / then
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> incomingMessageHandler.handleIncomingMessage(incomingMessage),
-                "Throw error for invalid topic");
-    }
-
-    @Test
     @DisplayName("Handle incoming message with invalid unitID")
     void handleIncomingMessageWithInvalidUnitID() {
         // given
@@ -198,7 +185,7 @@ class IncomingMessageHandlerTest {
 
         // when / then
         assertThrows(
-                IllegalArgumentException.class,
+                MessageProcessingException.class,
                 () -> incomingMessageHandler.handleIncomingMessage(incomingMessage),
                 "Throw error for invalid unitID");
     }
@@ -212,7 +199,7 @@ class IncomingMessageHandlerTest {
 
         // when / then
         assertThrows(
-                IllegalArgumentException.class,
+                MessageProcessingException.class,
                 () -> incomingMessageHandler.handleIncomingMessage(incomingMessage),
                 "Throw error for invalid name");
     }
@@ -226,7 +213,7 @@ class IncomingMessageHandlerTest {
 
         // when / then
         assertThrows(
-                IllegalArgumentException.class,
+                MessageProcessingException.class,
                 () -> incomingMessageHandler.handleIncomingMessage(incomingMessage),
                 "Throw error for invalid Unit project");
     }
