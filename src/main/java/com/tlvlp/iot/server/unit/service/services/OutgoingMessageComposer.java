@@ -47,7 +47,7 @@ public class OutgoingMessageComposer {
         var isModuleInUnit =
                 unit.getModules().stream()
                         .anyMatch(m -> m.getModuleID().equals(module.getModuleID()));
-        if(!isModuleInUnit) {
+        if (!isModuleInUnit) {
             throw new MessageProcessingException(
                     String.format("Cannot send module control message: " +
                                     "module is not present in unit: moduleID:%s unitID:%s",
