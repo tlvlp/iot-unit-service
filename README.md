@@ -12,7 +12,7 @@ This Dockerized SpringBoot-based service is responsible for all Microcontroller 
 - Generate global status request messages
 
 ## Building and publishing JAR + Docker image
-This project is using the using the [Palantir Docker Gradle plugin](https://github.com/palantir/gradle-docker).
+This project is using the [Palantir Docker Gradle plugin](https://github.com/palantir/gradle-docker).
 All configuration can be found in the [Gradle build file](build.gradle) file 
 and is recommended to be run with the docker/dockerTagsPush task.
 
